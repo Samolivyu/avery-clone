@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# Avery Website Clone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This project is a clone of the [Original Avery Website](https://www.aealimited.com/), implemented using React, CSS, and HTML. The application is designed to serve as a Progressive Web App (PWA) and incorporates OAuth and JSON Web Tokens (JWT) for user authentication and database storage.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Avery Website Replica:** This project aims to faithfully replicate the features and design of the original Avery website.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Progressive Web App (PWA):** The application is built as a PWA, enabling users to have a seamless experience across various devices and offline functionality.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **OAuth and JWT:** Secure user authentication is implemented using OAuth for third-party logins and JWT for managing authentication tokens.
 
-### `npm test`
+- **Database Storage:** The project utilizes a database for persistent storage, allowing users to store and retrieve data.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technologies Used
 
-### `npm run build`
+- **React:** The project is built using the React library for creating reusable UI components.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **CSS:** Styling is done using CSS to match the design of the original Avery website.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **HTML:** The structure of the application is defined using HTML.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **OAuth:** OAuth is used for secure third-party logins.
 
-### `npm run eject`
+- **JWT:** JSON Web Tokens are employed for secure authentication and authorization.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Samolivyu/avery-website-clone.git
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Navigate to the project directory:
+   ```bash
+   cd avery-website-clone
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Learn More
+4. Start the development server:
+   ```bash
+   npm start
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Usage
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Visit the application in your web browser at [http://localhost:3000](http://localhost:3000).
 
-### Code Splitting
+- Explore the features of the Avery website clone.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Contributing
 
-### Analyzing the Bundle Size
+If you would like to contribute to this project, please follow these steps:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. Fork the repository.
 
-### Making a Progressive Web App
+2. Create a new branch for your feature or bug fix:
+   ```bash
+   git checkout -b feature-name
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+3. Commit your changes:
+   ```bash
+   git commit -m "Your commit message"
+   ```
 
-### Advanced Configuration
+4. Push your branch to your fork:
+   ```bash
+   git push origin feature-name
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+5. Open a pull request on the main repository.
 
-### Deployment
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+This project is licensed under the [MIT License](LICENSE).
 
-### `npm run build` fails to minify
+## Acknowledgments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Original Avery Website](https://www.aealimited.com/): Acknowledge and provide credit to the original website that served as inspiration for this project.
