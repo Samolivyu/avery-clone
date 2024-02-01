@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './Home';
 
-class App  extends Component  () {
-  renderMatches(){
+
+const App = () => {
   return (
-    <div className='App'>
-      <h1>Welcome to Avery East africa Ltd.</h1>
-      <p>Weigh above the rest.</p>
-    </div>
+    <Routes>
+      </Route path= '/home' element= {<Home/>} >
+    </Routes>
   );
 };
-};
+
 export default App;
