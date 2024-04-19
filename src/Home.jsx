@@ -25,7 +25,7 @@ const Home = () =>
     <div className="contact-info">
       <div className="info-title">Email us</div>
       <div className="info-des">
-        <Route path="/avery-clone/public/">mailto:"aea@aealimited.com</Route>
+        <Route path="/src/Home.jsx">mailto:"aea@aealimited.com</Route>
       </div>
     </div>
   </div>
@@ -49,31 +49,31 @@ const Home = () =>
   </div>
   <ul className="nav-menu">
     <li className="menu-item-has-children current-menu-item">
-      <Route path="Home">Home</Route>
+      <Route path="/src/Home.jsx">Home</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="About">About</Route>
+      <Route path="/public/About.jsx">About</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="Services">Services</Route>
+      <Route path="/public/Services.jsx">Services</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="Projects">Projects</Route>
+      <Route path="/public/Projects.jsx">Projects</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="Blog">Blog</Route>
+      <Route path="/public/Blog.jsx">Blog</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="/Careers">Careers</Route>
+      <Route path="/public/Career.jsx">Careers</Route>
     </li>
     <br />
     <li>
-      <Route path="Contact">Contact</Route>
+      <Route path="/public/Contact.jsx">Contact</Route>
     </li>
   </ul>
   <div className="rs-banner banner-main-home">
