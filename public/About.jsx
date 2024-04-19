@@ -39,31 +39,31 @@ function About() {
                       </p>
                       <ul>
                         <li>
-                          <span className="caps">AVERY</span> <span className="caps">WEIGH</span>-<span className="caps">TRONIX</span> – Industrial Weighing equipment.
+                          <span className="caps">AVERY</span> <span className="caps">WEIGH</span>-<span className="caps">TRONIX</span>  Industrial Weighing equipment.
                         </li>
                         <li>
-                          <span className="caps">AVERY</span> <span className="caps">BERKEL</span> – Retail Weighing equipment.
+                          <span className="caps">AVERY</span> <span className="caps">BERKEL</span>  Retail Weighing equipment.
                         </li>
                         <li>
-                          <span className="caps">SALTER</span> <span className="caps">BRECKNELL</span> – Industrial Weighing Equipment.
+                          <span className="caps">SALTER</span> <span className="caps">BRECKNELL</span>  Industrial Weighing Equipment.
                         </li>
                         <li>
-                          <span className="caps">DILLON</span> – Industrial Weighing Equipment.
+                          <span className="caps">DILLON</span>  Industrial Weighing Equipment.
                         </li>
                         <li>
-                          <span className="caps">RAILWEIGHT</span> – Railway Weighing Equipment.
+                          <span className="caps">RAILWEIGHT</span>  Railway Weighing Equipment.
                         </li>
                         <li>
-                          <span className="caps">VIDEOJET</span> – Coding and marking Equipment
+                          <span className="caps">VIDEOJET</span>  Coding and marking Equipment
                         </li>
                         <li>
-                          <span className="caps">POWER</span> <span className="caps">SOURCE</span> <span className="caps">PROJECTS</span> – Diesel Power Generation equipment
+                          <span className="caps">POWER</span> <span className="caps">SOURCE</span> <span className="caps">PROJECTS</span>  Diesel Power Generation equipment
                         </li>
                         <li>
-                          <span className="caps">INA</span> / <span className="caps">FAG</span> – Industrial Bearing Products.
+                          <span className="caps">INA</span> / <span className="caps">FAG</span>  Industrial Bearing Products.
                         </li>
                         <li>
-                          <span className="caps">SDMO - Diesel Power Generation equipment</span>
+                          <span className="caps">SDMO Diesel Power Generation equipment</span>
                         </li>
                       </ul>
                       <p style={{ textAlign: 'justify' }}>

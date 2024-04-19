@@ -25,7 +25,7 @@ const Home = () =>
     <div className="contact-info">
       <div className="info-title">Email us</div>
       <div className="info-des">
-        <Route path="/avery-clone/public/">mailto:support@devsdesign.net">aea@aealimited.com</a>
+        <Route path="/avery-clone/public/">mailto:"aea@aealimited.com</Route>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@ const Home = () =>
     <div className="contact-info">
       <div className="info-title">Call Us</div>
       <div className="info-des">
-        <Route path="tel:(+0885)-23456789"> +254 724 259815</a>
+        <Route path="tel:(+0885)-23456789"> +254 724 259815</Route>
       </div>
     </div>
   </div>
@@ -49,31 +49,31 @@ const Home = () =>
   </div>
   <ul className="nav-menu">
     <li className="menu-item-has-children current-menu-item">
-      <Route path="Home">Home</a>
+      <Route path="Home">Home</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="About">About</a>
+      <Route path="About">About</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="Services">Services</a>
+      <Route path="Services">Services</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="Projects">Projects</a>
+      <Route path="Projects">Projects</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="Blog">Blog</a>
+      <Route path="Blog">Blog</Route>
     </li>
     <br />
     <li className="menu-item-has-children">
-      <Route path="/Careers">Careers</a>
+      <Route path="/Careers">Careers</Route>
     </li>
     <br />
     <li>
-      <Route path="Contact">Contact</a>
+      <Route path="Contact">Contact</Route>
     </li>
   </ul>
   <div className="rs-banner banner-main-home">

@@ -1,10 +1,8 @@
-import React from "react";
+// import React from "react";
 
 function Blog (){
 
-    return(
-
-    );
+    return(arguments)
 };
 
 export default Blog

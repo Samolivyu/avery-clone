@@ -3,12 +3,12 @@ import React from 'react';
 function Services() {
   return (
     <div>
-      <table width="900" cellspacing="1" cellpadding="10" border="0" height="300">
+      <table width={900} cellSpacing={1} cellPadding={10} border={0} height={300}>
         <tbody>
           <tr>
             <td valign="top">
               <div>
-                <img alt="" src="/web/20151009010224im_/http://averyafrica.com/userfiles/Services-banner(1).png" />
+                <img src="/web/20151009010224im_/http://averyafrica.com/userfiles/Services-banner(1).png" alt="Banner" />
                 <br />
                 &nbsp;
               </div>
@@ -18,7 +18,7 @@ function Services() {
                   <span style={{ fontSize: 'larger', color: 'rgb(255, 0, 0)' }}>SERVICES<br /></span>
                 </strong>
               </div>
-              <hr color="#ff0000" size="1" style={{ color: '#ff1a1a' }} />
+              <hr color="#ff1a1a" size={1} style={{ color: '#ff1a1a' }} />
               <div>
                 <p style={{ textAlign: 'justify' }}>Proper maintenance and servicing of your equipment is vital to the profitability of your business.&nbsp;<br /></p>
                 <p style={{ textAlign: 'justify' }}>With competitively priced contracts and flexible payment plans we offer maintenance cover &amp; technical support for any make of weighing or coding equipment and for any size business. Our wide range of standard maintenance contracts allow you to choose the level of support, response/fix times and hours of cover you need for your business.</p>
@@ -30,16 +30,16 @@ function Services() {
             </td>
           </tr>
           <tr>
-            <td colspan="4" className="text1"><br />
-              <table width="95%" align="center" cellspacing="0" cellpadding="0" border="0">
+            <td colSpan={4} className="text1"><br />
+              <table width="95%" align="center" cellSpacing={0} cellPadding={0} border={0}>
                 <tbody>
                   <tr>
-                    <td colspan="3"><b>Click on Respective Region for Available Products</b><hr size="1" color="#DB4244" style={{ color: '#de5052' }} /></td>
+                    <td colSpan={3}><b>Click on Respective Region for Available Products</b><hr size={1} color="#de5052" /></td>
                   </tr>
                   <tr>
-                    <td width="315" align="center"><a href="Kenya/" className="dlink"><img src="/web/20151009010224im_/http://averyafrica.com/images/kenya.jpg" width="257" height="93" border="0" alt="" /></a></td>
-                    <td width="315" align="center"><a href="tz/" className="dlink"><img src="/web/20151009010224im_/http://averyafrica.com/images/tanzania.jpg" width="255" height="94" border="0" alt="" /></a></td>
-                    <td width="315" align="center"><a href="Uganda/" className="dlink"><img src="/web/20151009010224im_/http://averyafrica.com/images/uganda.jpg" width="250" height="93" border="0" alt="" /></a></td>
+                    <td width={315} align="center"><a href="Kenya/" className="dlink"><img src="/web/20151009010224im_/http://averyafrica.com/images/kenya.jpg" width={257} height={93} border={0} alt="" /></a></td>
+                    <td width={315} align="center"><a href="tz/" className="dlink"><img src="/web/20151009010224im_/http://averyafrica.com/images/tanzania.jpg" width={255} height={94} border={0} alt="" /></a></td>
+                    <td width={315} align="center"><a href="Uganda/" className="dlink"><img src="/web/20151009010224im_/http://averyafrica.com/images/uganda.jpg" width={250} height={93} border={0} alt="" /></a></td>
                   </tr>
                 </tbody>
               </table>
