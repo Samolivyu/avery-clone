@@ -1,0 +1,43 @@
+ /* Add logo of the site title */
+ .logo {
+  width: 100px; /* Adjust width as needed */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Ensure logo is centered */
+  margin-left: auto; /* Center logo horizontally */
+}
+
+
+/* Set background color of entire site */
+body {
+    background-color: #f0f0f0;
+  }
+  
+  
+  /* Style unordered list */
+  ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+  }
+  
+  /* Style list items */
+  ul li {
+    margin-bottom: 10px; /* Add space between list items */
+  }
+  
+  /* Style hover buttons */
+  .button {
+    background-color: #007bff; /* Default button color */
+    color: #ffffff; /* Button text color */
+    padding: 10px 20px; /* Padding for button */
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Display buttons inline */
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+  }
+  
+  /* Change button color on hover */
+  .button:hover {
+    background-color: #0056b3; /* Hover button color */
+  }
+  
