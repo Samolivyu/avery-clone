@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Scale, Tool, Award } from 'lucide-react';
+import { Scale, Wrench, Award } from 'lucide-react';
 
 const ServiceCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
   return (
@@ -33,7 +33,7 @@ const ServicesSection = () => {
             description="Expert consultation to help you select the right weighing equipment for your specific application and industry requirements."
           />
           <ServiceCard 
-            icon={<Tool size={32} />}
+            icon={<Wrench size={32} />}
             title="Support"
             description="Technical assistance, maintenance services, and calibration to ensure your weighing equipment remains accurate and reliable."
           />
