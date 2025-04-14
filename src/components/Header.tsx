@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, Search, ShoppingCart, Clock } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Search, Clock } from 'lucide-react';
 import TimeLogger from './TimeLogger';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTimeLoggerOpen, setIsTimeLoggerOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <header className="bg-weightech-black text-white">
@@ -15,9 +16,11 @@ const Header = () => {
         <div>
           <span className="text-sm">Call us: 0800 123 4567</span>
         </div>
-        <div className="flex items-center space-x-4">
-          <Link to="/contact" className="text-sm header-nav-link">Contact</Link>
-          <Link to="/about" className="text-sm header-nav-link">About Us</Link>
+        <div className="flex items-center">
+          <button onClick={() => setIsTimeLoggerOpen(!isTimeLoggerOpen)} className="flex items-center text-white hover:text-weightech-red transition-colors ml-4">
+            <Clock size={16} className="mr-1" />
+            <span className="text-sm">Staff Login</span>
+          </button>
         </div>
       </div>
       
@@ -41,20 +44,24 @@ const Header = () => {
         
         {/* Navigation for desktop */}
         <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/products" className="header-nav-link">Products</Link>
-          <Link to="/sectors" className="header-nav-link">Sectors</Link>
-          <Link to="/services" className="header-nav-link">Services</Link>
-          <Link to="/news" className="header-nav-link">News</Link>
-          <div className="flex items-center space-x-4">
-            <button onClick={() => setIsTimeLoggerOpen(!isTimeLoggerOpen)} className="flex items-center text-white hover:text-weightech-red transition-colors">
-              <Clock size={20} className="mr-1" />
-              <span>Staff</span>
-            </button>
-            <Link to="/cart" className="flex items-center text-white hover:text-weightech-red transition-colors">
-              <ShoppingCart size={20} className="mr-1" />
-              <span>Cart (0)</span>
-            </Link>
-          </div>
+          <Link 
+            to="/" 
+            className={`header-nav-link ${location.pathname === '/' ? 'text-weightech-red' : ''}`}
+          >
+            Home
+          </Link>
+          <Link 
+            to="/products" 
+            className={`header-nav-link ${location.pathname === '/products' ? 'text-weightech-red' : ''}`}
+          >
+            Products
+          </Link>
+          <Link 
+            to="/services" 
+            className={`header-nav-link ${location.pathname === '/services' ? 'text-weightech-red' : ''}`}
+          >
+            Services
+          </Link>
         </nav>
         
         {/* Mobile menu button */}
@@ -62,9 +69,6 @@ const Header = () => {
           <button onClick={() => setIsTimeLoggerOpen(!isTimeLoggerOpen)} className="text-white p-2">
             <Clock size={20} />
           </button>
-          <Link to="/cart" className="text-white p-2">
-            <ShoppingCart size={20} />
-          </Link>
           <button 
             className="text-white p-2" 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -87,10 +91,24 @@ const Header = () => {
               </button>
             </div>
             <nav className="flex flex-col space-y-3 pb-4">
-              <Link to="/products" className="header-nav-link py-1">Products</Link>
-              <Link to="/sectors" className="header-nav-link py-1">Sectors</Link>
-              <Link to="/services" className="header-nav-link py-1">Services</Link>
-              <Link to="/news" className="header-nav-link py-1">News</Link>
+              <Link 
+                to="/" 
+                className={`header-nav-link py-1 ${location.pathname === '/' ? 'text-weightech-red' : ''}`}
+              >
+                Home
+              </Link>
+              <Link 
+                to="/products" 
+                className={`header-nav-link py-1 ${location.pathname === '/products' ? 'text-weightech-red' : ''}`}
+              >
+                Products
+              </Link>
+              <Link 
+                to="/services" 
+                className={`header-nav-link py-1 ${location.pathname === '/services' ? 'text-weightech-red' : ''}`}
+              >
+                Services
+              </Link>
             </nav>
           </div>
         )}
