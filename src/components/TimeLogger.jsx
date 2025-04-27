@@ -1,19 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Download, UserPlus } from 'lucide-react';
-import { 
-  getCurrentUser, 
-  isAuthenticated, 
-  logout, 
-  loginWithPin,
-  clockIn,
-  clockOut,
-  startBreak,
-  endBreak,
-  getActiveLog,
-  getActiveBreak,
-  downloadAllRecords
-} from '../utils/auth';
+import {   getCurrentUser,   isAuthenticated,   logout,   loginWithPin,  clockIn,  clockOut,
+  startBreak,   endBreak,   getActiveLog,   getActiveBreak,   downloadAllRecords} from '../utils/auth';
 import LoginForm from './LoginForm';
 import TimeLogsTable from './TimeLogsTable';
 import PinEntryForm from './PinEntryForm';
@@ -134,7 +123,7 @@ const TimeLogger = ({ onClose }) => {
   return (
     <div className="bg-white rounded-lg shadow-xl w-full max-w-md border border-gray-200">
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-weightech-black">
+        <h2 className="text-xl font-bold text-avery-black">
           {isLoggedIn ? "Employee Time Clock" : "Staff Login"}
         </h2>
         <button 

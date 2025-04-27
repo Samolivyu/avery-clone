@@ -57,12 +57,12 @@ const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-2 mb-6">
+      <div className="grid grid-cols-3 gap-2 mb-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
           <button
             key={num}
             onClick={() => handleNumberPress(num.toString())}
-            className="w-full aspect-square flex items-center justify-center border border-gray-300 rounded text-xl hover:bg-gray-100"
+            className="w-full aspect-square flex items-center justify-center border border-gray-30 rounded text-xl hover:bg-gray-10"
           >
             {num}
           </button>
@@ -70,7 +70,7 @@ const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
         <div></div>
         <button
           onClick={() => handleNumberPress('0')}
-          className="w-full aspect-square flex items-center justify-center border border-gray-300 rounded text-xl hover:bg-gray-100"
+          className="w-full aspect-square flex items-center justify-center border border-gray-30 rounded text-xl hover:bg-gray-10"
         >
           0
         </button>
@@ -90,7 +90,7 @@ const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
         <button
           type="button"
           onClick={onSwitchToLogin}
-          className="text-sm text-center text-weightech-red hover:underline mt-2"
+          className="text-sm text-center text-avery-red hover:underline mt-2"
         >
           Login with Email Instead
         </button>

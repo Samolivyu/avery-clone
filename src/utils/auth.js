@@ -5,7 +5,7 @@ import jwt_decode from "jwt-decode";
 const users = [
   { 
     id: "1", 
-    email: "admin@weightech.com", 
+    email: "admin@avery.com", 
     password: "admin123", 
     pin: "1234",
     name: "Admin User", 
@@ -14,7 +14,7 @@ const users = [
   },
   { 
     id: "2", 
-    email: "staff@weightech.com", 
+    email: "staff@avery.com", 
     password: "staff123", 
     pin: "5678",
     name: "Staff User", 
@@ -24,9 +24,9 @@ const users = [
 ];
 
 // Constants for local storage keys
-const LOCAL_STORAGE_TOKEN_KEY = "weightech_auth_token";
-const LOCAL_STORAGE_TIME_LOGS_KEY = "weightech_time_logs";
-const LOCAL_STORAGE_BREAKS_KEY = "weightech_break_logs";
+const LOCAL_STORAGE_TOKEN_KEY = "avery_auth_token";
+const LOCAL_STORAGE_TIME_LOGS_KEY = "avery_time_logs";
+const LOCAL_STORAGE_BREAKS_KEY = "avery_break_logs";
 
 // Authentication functions
 export const login = (email, password) => {
@@ -259,7 +259,7 @@ export const downloadAllRecords = () => {
   
   const a = document.createElement('a');
   a.href = url;
-  a.download = `weightech_time_records_${new Date().toISOString().split('T')[0]}.json`;
+  a.download = `avery_time_records_${new Date().toISOString().split('T')[0]}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

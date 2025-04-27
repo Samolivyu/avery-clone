@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { login } from '../utils/auth';
 import { toast } from 'sonner';
+import PinEntryForm from './PinEntryForm';
 
 const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
   const [email, setEmail] = useState("");
@@ -16,8 +16,8 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
 
     try {
       // Demo credentials:
-      // admin@weightech.com / admin123
-      // staff@weightech.com / staff123
+      // admin@avery.com / admin123
+      // staff@avery.com / staff123
       const token = login(email, password);
       
       if (token) {
@@ -37,7 +37,7 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
 
   return (
     <div className="bg-white rounded-lg p-6 w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-6 text-center text-weightech-black">Staff Login</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-avery-black">Staff Login</h2>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -55,7 +55,7 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-weightech-red"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-avery-red"
             required
           />
         </div>
@@ -69,7 +69,7 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-weightech-red"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-avery-red"
             required
           />
         </div>
@@ -86,7 +86,7 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
           
           <button
             type="submit"
-            className="w-1/2 py-2 bg-weightech-red text-white rounded-md hover:bg-red-700 focus:outline-none"
+            className="w-1/2 py-2 bg-avery-red border border-gray-300 rounded-md text-gray-700 hover:bg-red-700 focus:outline-none"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
@@ -98,7 +98,7 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
         <button
           type="button"
           onClick={onSwitchToPin}
-          className="text-sm text-weightech-red hover:underline"
+          className="text-sm text-avery-red hover:underline"
         >
           Use PIN Instead
         </button>
@@ -106,8 +106,8 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
       
       <div className="mt-4 text-center text-sm text-gray-600">
         <p>Demo accounts:</p>
-        <p>admin@weightech.com / admin123</p>
-        <p>staff@weightech.com / staff123</p>
+        <p>admin@avery.com / admin123</p>
+        <p>staff@avery.com / staff123</p>
         <p className="mt-1">Or use PIN: 1234 (admin) or 5678 (staff)</p>
       </div>
     </div>
