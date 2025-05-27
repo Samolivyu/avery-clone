@@ -10,32 +10,12 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
   const navLinks = [
-    {
-      name: "Products",
-      path: "/products",
-      hasDropdown: true,
-      dropdownItems: [
-        { name: "Compact Scales", path: "/products/compact-scales" },
-        { name: "Analytical Balances", path: "/products/analytical-balances" },
-        { name: "Platform Scales", path: "/products/platform-scales" },
-        { name: "Checkweighers", path: "/products/checkweighers" }
-      ]
-    },
-    {
-      name: "Sectors",
-      path: "/sectors",
-      hasDropdown: true,
-      dropdownItems: [
-        { name: "Industrial", path: "/sectors/industrial" },
-        { name: "Laboratory", path: "/sectors/laboratory" },
-        { name: "Vehicle", path: "/sectors/vehicle" },
-        { name: "Inspection", path: "/sectors/inspection" }
-      ]
-    },
+    { name: "About", path: "/", hasDropdown: false },
     { name: "Services", path: "/services", hasDropdown: false },
-    { name: "News", path: "/news", hasDropdown: false },
-    { name: "About", path: "/about", hasDropdown: false },
-    { name: "Contact", path: "/contact", hasDropdown: false }
+    {name: "Products", path: "/products", hasDropdown: false },
+    { name: "Staff Login", path: "/login", hasDropdown: false },
+    { name: "Staff Pin", path: "/pin", hasDropdown: false }
+
   ];
 
   return (
@@ -44,7 +24,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-avery-black">AVERY</span>
+            <img src="/images/aea-logo.webp" className="h-8 me-3" alt="AEA Logo" /> 
           </Link>
 
           {/* Desktop Navigation */}
@@ -87,17 +67,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Search and Cart */}
-          <div className="hidden md:flex items-center space-x-6">
-            <button className="text-gray-700 hover:text-avery-red transition-colors">
-              <Search size={20} />
-            </button>
-            <Link to="/cart" className="text-gray-700 hover:text-avery-red transition-colors">
-              <ShoppingCart size={20} />
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
+         {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button 
               onClick={toggleMenu}

@@ -35,5 +35,7 @@ export default {
   plugins: [
     require('@tailwindcss/typography'),
     require('tailwindcss-animate'),
+    require('flowbite/plugin')
+
   ],
 }

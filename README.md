@@ -1,73 +1,86 @@
-# Welcome to your Lovable project
+# Avery Website Clone
 
-## Project info
+## Overview
 
-**URL**: https://lovable.dev/projects/403ecbe8-d1ef-4362-9fb4-93d4fb63ecac
+This project is a clone of the [Original Avery Website](https://www.aealimited.com/), implemented using React, CSS, and HTML. The application is designed to serve as a Progressive Web App (PWA) and incorporates OAuth and JSON Web Tokens (JWT) for user authentication and database storage.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Avery Website Replica:** This project aims to faithfully replicate the features and design of the original Avery website.
 
-**Use Lovable**
+- **Progressive Web App (PWA):** The application is built as a PWA, enabling users to have a seamless experience across various devices and offline functionality.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/403ecbe8-d1ef-4362-9fb4-93d4fb63ecac) and start prompting.
+- **OAuth and JWT:** Secure user authentication is implemented using OAuth for third-party logins and JWT for managing authentication tokens.
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Database Storage:** The project utilizes a database for persistent storage, allowing users to store and retrieve data.
 
-**Use your preferred IDE**
+## Technologies Used
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **React:** The project is built using the React library for creating reusable UI components.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **CSS:** Styling is done using CSS to match the design of the original Avery website.
 
-Follow these steps:
+- **HTML:** The structure of the application is defined using HTML.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **OAuth:** OAuth is used for secure third-party logins.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- **JWT:** JSON Web Tokens are employed for secure authentication and authorization.
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Installation
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Samolivyu/avery-website-clone.git
+   ```
 
-**Edit a file directly in GitHub**
+2. Navigate to the project directory:
+   ```bash
+   cd avery-website-clone
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-**Use GitHub Codespaces**
+4. Start the development server:
+   ```bash
+   npm start
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Usage
 
-## What technologies are used for this project?
+- Visit the application in your web browser at [http://localhost:3000](http://localhost:3000).
 
-This project is built with:
+- Explore the features of the Avery website clone.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Contributing
 
-## How can I deploy this project?
+If you would like to contribute to this project, please follow these steps:
 
-Simply open [Lovable](https://lovable.dev/projects/403ecbe8-d1ef-4362-9fb4-93d4fb63ecac) and click on Share -> Publish.
+1. Fork the repository.
 
-## Can I connect a custom domain to my Lovable project?
+2. Create a new branch for your feature or bug fix:
+   ```bash
+   git checkout -b feature-name
+   ```
 
-Yes, you can!
+3. Commit your changes:
+   ```bash
+   git commit -m "Your commit message"
+   ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+4. Push your branch to your fork:
+   ```bash
+   git push origin feature-name
+   ```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+5. Open a pull request on the main repository.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgments
+
+- [Original Avery Website](https://www.aealimited.com/): Acknowledge and provide credit to the original website that served as inspiration for this project.

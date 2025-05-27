@@ -156,7 +156,7 @@ const TimeLogger = ({ onClose }) => {
                         Download Records
                       </button>
                       <button 
-                        className="flex items-center text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                        className="flex items-center text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                       >
                         <UserPlus size={16} className="mr-1" />
                         Add Employee
@@ -179,7 +179,7 @@ const TimeLogger = ({ onClose }) => {
                 disabled={!!activeLog}
                 className={`py-2 text-white rounded-md focus:outline-none ${
                   !activeLog 
-                    ? "bg-blue-500 hover:bg-blue-600" 
+                    ? "bg-red-500 hover:bg-red-600" 
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
@@ -191,7 +191,7 @@ const TimeLogger = ({ onClose }) => {
                 disabled={!activeLog || !!activeBreak}
                 className={`py-2 text-white rounded-md focus:outline-none ${
                   activeLog && !activeBreak
-                    ? "bg-blue-500 hover:bg-blue-600" 
+                    ? "bg-red-500 hover:bg-red-600" 
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
@@ -203,7 +203,7 @@ const TimeLogger = ({ onClose }) => {
                 disabled={!activeLog || !!activeBreak}
                 className={`py-2 text-white rounded-md focus:outline-none ${
                   activeLog && !activeBreak
-                    ? "bg-blue-500 hover:bg-blue-600" 
+                    ? "bg-red-500 hover:bg-red-600" 
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
@@ -215,7 +215,7 @@ const TimeLogger = ({ onClose }) => {
                 disabled={!activeBreak}
                 className={`py-2 text-white rounded-md focus:outline-none ${
                   activeBreak
-                    ? "bg-blue-500 hover:bg-blue-600" 
+                    ? "bg-red-500 hover:bg-red-600" 
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >

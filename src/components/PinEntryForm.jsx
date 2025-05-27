@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import LoginForm from './LoginForm';
 
 const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
   const [pin, setPin] = useState('');
@@ -19,7 +20,6 @@ const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
     e && e.preventDefault();
     
     if (pin.length === 0) return;
-    
     setIsLoading(true);
     
     // Small delay to simulate processing
@@ -81,8 +81,8 @@ const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
         <button
           onClick={handleSubmit}
           disabled={isLoading || pin.length === 0}
-          className={`py-2 w-full bg-blue-500 text-white rounded-md 
-            ${(isLoading || pin.length === 0) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+          className={`py-2 w-full bg-red-500 text-white rounded-md 
+            ${(isLoading || pin.length === 0) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
         >
           {isLoading ? "Submitting..." : "Clock In"}
         </button>

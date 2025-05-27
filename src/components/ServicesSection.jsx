@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, Wrench, Award } from 'lucide-react';
+import { Scale, Wrench, BadgeCheck } from 'lucide-react';
 
 const ServiceCard = ({ icon, title, description }) => {
   return (
@@ -37,7 +37,7 @@ const ServicesSection = () => {
             description="Technical assistance, maintenance services, and calibration to ensure your weighing equipment remains accurate and reliable."
           />
           <ServiceCard 
-            icon={<Award size={32} />}
+            icon={<BadgeCheck size={32} />}
             title="Calibration"
             description="UKAS-accredited calibration services for all types of weighing equipment, ensuring compliance with industry standards."
           />
