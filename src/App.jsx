@@ -13,7 +13,13 @@ import { Toaster } from 'sonner';
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  //Added a success handler to demonstrate login success
+  const handleSuccess = () =>{
+    console.log("Login successful");
+  }
+ 
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -21,10 +27,10 @@ const App = () => (
       <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<Products  />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/pin" element={<PinEntryForm />} />
+          <Route path="/login" element={<Login onSuccess={handleSuccess} />} />
+          <Route path="/pin" element={<PinEntryForm onSuccess={handleSuccess} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer /> 
@@ -32,5 +38,6 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+};
 
 export default App;

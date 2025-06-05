@@ -2,15 +2,13 @@
 
 ## Overview
 
-This project is a clone of the [Original Avery Website](https://www.aealimited.com/), implemented using React, CSS, and HTML. The application is designed to serve as a Progressive Web App (PWA) and incorporates OAuth and JSON Web Tokens (JWT) for user authentication and database storage.
+This project is a clone of the [Original Avery Website](https://www.aealimited.com/), implemented using React, CSS, and HTML. The application incorporates JSON Web Tokens (JWT) for user authentication and database storage.
 
 ## Features
 
 - **Avery Website Replica:** This project aims to faithfully replicate the features and design of the original Avery website.
 
-- **Progressive Web App (PWA):** The application is built as a PWA, enabling users to have a seamless experience across various devices and offline functionality.
-
-- **OAuth and JWT:** Secure user authentication is implemented using OAuth for third-party logins and JWT for managing authentication tokens.
+- **JWT:** Secure user authentication is implemented using OAuth for third-party logins and JWT for managing authentication tokens.
 
 - **Database Storage:** The project utilizes a database for persistent storage, allowing users to store and retrieve data.
 
@@ -21,8 +19,6 @@ This project is a clone of the [Original Avery Website](https://www.aealimited.c
 - **CSS:** Styling is done using CSS to match the design of the original Avery website.
 
 - **HTML:** The structure of the application is defined using HTML.
-
-- **OAuth:** OAuth is used for secure third-party logins.
 
 - **JWT:** JSON Web Tokens are employed for secure authentication and authorization.
 
@@ -83,4 +79,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-- [Original Avery Website](https://www.aealimited.com/): Acknowledge and provide credit to the original website that served as inspiration for this project.
+- [Original Avery Website](https://www.aealimited.com/) and [WayBack Machine] (): Acknowledge and provide credit to the original website that served as inspiration for this project.

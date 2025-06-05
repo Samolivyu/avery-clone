@@ -30,9 +30,15 @@ const LOCAL_STORAGE_BREAKS_KEY = "avery_break_logs";
 
 // Authentication functions
 export const login = (email, password) => {
-  const user = users.find(u => u.email === email && u.password === password);
+  // Find user by email and password
+  console.log("Attempting login with email:", email, "and password:", password);
+
+  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
   
-  if (!user) return null;
+  if (!user) {
+    console.log("Login failed. User not found.");
+    return null;
+  }
   
   // Create a simple JWT-like token
   const token = jwt.sign(

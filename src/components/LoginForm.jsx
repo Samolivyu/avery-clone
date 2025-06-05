@@ -1,3 +1,5 @@
+//This handles the Auth. It does not have a login form for the user to sign up. This page is for signed up users to be directed to the clock in page (TimeLogger). BTW, sina Sign up page ya kuchukua user data. 
+
 import React, { useState } from 'react';
 import { login } from '../utils/auth';
 import { toast } from 'sonner';
@@ -20,6 +22,8 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
       // staff@avery.com / staff123
       const token = login(email, password);
       
+      // check for token
+      console.log("Token:", token);
       if (token) {
         toast.success("Login successful");
         onSuccess();
