@@ -7,9 +7,14 @@ import LoginForm from './LoginForm';
 import TimeLogsTable from './TimeLogsTable';
 import PinEntryForm from './PinEntryForm';
 import { toast } from 'sonner';
+import { clockIn, clockOut } from '../utils/auth';
+
+const handleClockIn = async () => {
+  await clockIn(user.id, "Starting shift");
+  setRefreshKey(prev => prev + 1);
+};
 
 const TimeLogger = ({ onClose }) => {
-  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [viewMode, setViewMode] = useState('pin'); // 'pin', 'login', or 'dashboard'
@@ -120,6 +125,9 @@ const TimeLogger = ({ onClose }) => {
     });
   };
   
+  const user = getCurrentUser();
+  console.log("Logged in as:", user?.name, user?.role);
+
   return (
     <div className="bg-white rounded-lg shadow-xl w-full max-w-md border border-gray-200">
       <div className="flex justify-between items-center p-4 border-b border-gray-200">

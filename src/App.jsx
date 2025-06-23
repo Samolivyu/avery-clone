@@ -5,6 +5,7 @@ import Services from "./pages/Services.jsx";
 import Login from "./components/LoginForm.jsx";
 import PinEntryForm from "./components/PinEntryForm.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import TimeLogsTable from "./components/TimeLogsTable.jsx";
 import Home from "./components/Home.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx"; 
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products  />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/time-logger" element={<TimeLogsTable />} />
           <Route path="/login" element={<Login onSuccess={handleSuccess} />} />
           <Route path="/pin" element={<PinEntryForm onSuccess={handleSuccess} />} />
           <Route path="*" element={<NotFound />} />

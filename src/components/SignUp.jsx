@@ -5,7 +5,7 @@ import { login } from '../utils/auth';
 import { toast } from 'sonner';
 import PinEntryForm from './PinEntryForm';
 
-const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
+const SignUp = ({ onSuccess, onCancel, onSwitchToPin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -122,4 +122,4 @@ const LoginForm = ({ onSuccess, onCancel, onSwitchToPin }) => {
   );
 };
 
-export default LoginForm;
+export default SignUp;
