@@ -1,12 +1,14 @@
+// server.js
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import connectDB from '../src/config/database.js';
+import connectDB from './config/db.js';
+import authRoutes from './routes/auth.js';
+import timeRoutes from './routes/time.js';
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -19,51 +21,50 @@ connectDB();
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['your-production-domain.com'] 
+    ? ['http://localhost:3000'] 
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 }));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', limiter);
 
-// Body parsing middleware
+// Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Logging middleware
-app.use(morgan('combined'));
+// Logging
+app.use(morgan('dev'));
 
-// Basic route
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/time', timeRoutes);
+
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'Staff Timer API is running',
-    timestamp: new Date().toISOString(),
-    database: 'Connected'
+    timestamp: new Date().toISOString()
   });
 });
-
-// TODO: Add your auth and timesheet routes here
-// app.use('/api/auth', authRoutes);
-// app.use('/api/timesheet', timesheetRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err.message : null
   });
 });
 

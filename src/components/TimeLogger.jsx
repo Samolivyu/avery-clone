@@ -1,256 +1,194 @@
-
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Download, UserPlus } from 'lucide-react';
-import {   getCurrentUser,   isAuthenticated,   logout,   loginWithPin,  clockIn,  clockOut,
-  startBreak,   endBreak,   getActiveLog,   getActiveBreak,   downloadAllRecords} from '../utils/auth';
-import LoginForm from './LoginForm';
+import { authManager } from '../utils/auth';
 import TimeLogsTable from './TimeLogsTable';
-import PinEntryForm from './PinEntryForm';
 import { toast } from 'sonner';
-import { clockIn, clockOut } from '../utils/auth';
 
-const handleClockIn = async () => {
-  await clockIn(user.id, "Starting shift");
-  setRefreshKey(prev => prev + 1);
-};
-
-const TimeLogger = ({ onClose }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [viewMode, setViewMode] = useState('pin'); // 'pin', 'login', or 'dashboard'
+const TimeLogger = () => {
+  const [user, setUser] = useState(null);
   const [activeLog, setActiveLog] = useState(null);
   const [activeBreak, setActiveBreak] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  
+  const [refreshKey, setRefreshKey] = useState(0);
+  const navigate = useNavigate();
+
+  // Redirect to login if not authenticated, else fetch active log and break
   useEffect(() => {
-    const checkAuth = () => {
-      const authenticated = isAuthenticated();
-      setIsLoggedIn(authenticated);
-      
-      if (authenticated) {
-        const currentUser = getCurrentUser();
-        setUser(currentUser);
-        
-        // Check for active logs and breaks
-        setActiveLog(getActiveLog(currentUser.id));
-        setActiveBreak(getActiveBreak(currentUser.id));
-        
-        setViewMode('dashboard');
-      } else {
-        setUser(null);
-        setViewMode('pin');
+    const currentUser = authManager.getCurrentUser();
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+    setUser(currentUser);
+
+    const fetchStatus = async () => {
+      try {
+        const logRes = await authManager.getActiveLog();
+        setActiveLog(logRes.activeLog || null);
+        const breakRes = await authManager.getActiveBreak();
+        setActiveBreak(breakRes.activeBreak || null);
+      } catch (err) {
+        console.error('Failed to fetch active time status:', err);
+        toast.error('Failed to load active time status.');
+        setActiveLog(null);
+        setActiveBreak(null);
       }
     };
-    
-    checkAuth();
-  }, [refreshKey]);
-  
-  // Update current time every second
+    fetchStatus();
+  }, [refreshKey, navigate]);
+
+  // Live clock
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 1000);
-    
-    return () => clearInterval(intervalId);
+    const id = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(id);
   }, []);
-  
-  const handleLoginSuccess = () => {
-    setRefreshKey(prev => prev + 1);
-  };
-  
-  const handlePinEntry = (pin) => {
+
+  const handleRefresh = () => setRefreshKey((k) => k + 1);
+
+  const handleLogout = async () => {
     try {
-      const token = loginWithPin(pin);
-      if (token) {
-        toast.success("Login successful");
-        handleLoginSuccess();
-      } else {
-        toast.error("Invalid PIN");
-      }
+      await authManager.logout();
+      toast.success('Logged out successfully');
+      navigate('/login');
     } catch (err) {
-      toast.error("Login failed");
-      console.error(err);
+      toast.error('Logout failed');
     }
   };
-  
-  const handleLogout = () => {
-    logout();
-    setRefreshKey(prev => prev + 1);
-  };
-  
-  const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1);
-  };
-  
-  const handleAction = async (action, notes = "") => {
-    if (!user) return;
-    
+
+  const handleAction = async (action, notes = '') => {
+    if (!user) {
+      toast.error('User not logged in.');
+      return;
+    }
     try {
       switch (action) {
         case 'clockIn':
-          clockIn(user.id, notes);
-          toast.success("Clocked in successfully");
+          await authManager.clockIn(notes);
+          toast.success('Clocked in successfully');
           break;
         case 'clockOut':
-          clockOut(user.id, notes);
-          toast.success("Clocked out successfully");
+          await authManager.clockOut(notes);
+          toast.success('Clocked out successfully');
           break;
         case 'startBreak':
-          startBreak(user.id, notes);
-          toast.success("Break started");
+          await authManager.startBreak(notes);
+          toast.success('Break started');
           break;
         case 'endBreak':
-          endBreak(user.id, notes);
-          toast.success("Break ended");
+          await authManager.endBreak(notes);
+          toast.success('Break ended');
           break;
         default:
-          break;
+          return;
       }
-      
       handleRefresh();
     } catch (err) {
-      toast.error(err.message || "An error occurred");
+      console.error('Time action error:', err);
+      toast.error(err.message || 'An error occurred');
     }
   };
-  
-  const formatTime = (date) => {
-    return date.toLocaleString('en-US', {
+
+  const formatTime = (dt) =>
+    dt.toLocaleString('en-US', {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      hour12: true
+      hour12: true,
     });
-  };
-  
-  const user = getCurrentUser();
-  console.log("Logged in as:", user?.name, user?.role);
+
+  if (!user) {
+    // Optional: show a loading state briefly, but navigate kicks in above
+    return <p className="text-gray-500 text-center my-4">Redirecting to login...</p>;
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-xl w-full max-w-md border border-gray-200">
+    <div className="bg-white rounded-lg shadow-xl w-full max-w-md border border-gray-200 mx-auto my-8">
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-avery-black">
-          {isLoggedIn ? "Employee Time Clock" : "Staff Login"}
-        </h2>
-        <button 
-          className="text-gray-500 hover:text-gray-700" 
-          onClick={onClose}
-        >
-          <X size={20} />
+        <h2 className="text-xl font-bold text-gray-900">Employee Time Clock</h2>
+        <button className="text-gray-500 hover:text-gray-700" onClick={handleLogout}>
+          Logout
         </button>
       </div>
-      
+
       <div className="p-4">
-        {isLoggedIn && user ? (
-          <>
-            <div className="mb-4">
-              <p className="text-center mb-2">Current Time: {formatTime(currentDateTime)}</p>
-              <div className="flex justify-between items-center mb-2">
-                <div>
-                  <p className="font-medium">{user.name}</p>
-                  <p className="text-sm text-gray-600">{user.email}</p>
-                  <p className="text-xs text-gray-500 capitalize">ID: {user.employeeId}</p>
-                </div>
-                <div className="space-y-2">
-                  {user.role === 'admin' && (
-                    <>
-                      <button 
-                        onClick={downloadAllRecords}
-                        className="flex items-center text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                      >
-                        <Download size={16} className="mr-1" />
-                        Download Records
-                      </button>
-                      <button 
-                        className="flex items-center text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                      >
-                        <UserPlus size={16} className="mr-1" />
-                        Add Employee
-                      </button>
-                    </>
-                  )}
-                  <button 
-                    className="flex items-center text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-1 rounded"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              <button
-                onClick={() => handleAction('clockIn')}
-                disabled={!!activeLog}
-                className={`py-2 text-white rounded-md focus:outline-none ${
-                  !activeLog 
-                    ? "bg-red-500 hover:bg-red-600" 
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Clock In
-              </button>
-              
-              <button
-                onClick={() => handleAction('clockOut')}
-                disabled={!activeLog || !!activeBreak}
-                className={`py-2 text-white rounded-md focus:outline-none ${
-                  activeLog && !activeBreak
-                    ? "bg-red-500 hover:bg-red-600" 
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Clock Out
-              </button>
-              
-              <button
-                onClick={() => handleAction('startBreak')}
-                disabled={!activeLog || !!activeBreak}
-                className={`py-2 text-white rounded-md focus:outline-none ${
-                  activeLog && !activeBreak
-                    ? "bg-red-500 hover:bg-red-600" 
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Start Break
-              </button>
-              
-              <button
-                onClick={() => handleAction('endBreak')}
-                disabled={!activeBreak}
-                className={`py-2 text-white rounded-md focus:outline-none ${
-                  activeBreak
-                    ? "bg-red-500 hover:bg-red-600" 
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-              >
-                End Break
-              </button>
-            </div>
-            
-            <div className="mt-6">
-              <h3 className="text-lg font-medium mb-2">Today's Time Cards</h3>
-              <TimeLogsTable userId={user.id} showTodayOnly={true} />
-            </div>
-          </>
-        ) : (
-          <>
-            {viewMode === 'pin' ? (
-              <div>
-                <PinEntryForm onSuccess={handlePinEntry} onSwitchToLogin={() => setViewMode('login')} />
-              </div>
-            ) : (
-              <LoginForm 
-                onSuccess={handleLoginSuccess} 
-                onCancel={onClose}
-                onSwitchToPin={() => setViewMode('pin')}
-              />
+        <div className="mb-4 text-center">
+          <p className="mb-2">Current Time: {formatTime(currentDateTime)}</p>
+        </div>
+
+        <div className="flex justify-between items-center mb-4 flex-wrap">
+          <div>
+            <p className="font-medium text-gray-900">{user.name}</p>
+            <p className="text-sm text-gray-600">{user.email}</p>
+            <p className="text-xs text-gray-500 capitalize">ID: {user.userId}</p>
+          </div>
+          <div className="space-y-2 mt-2 md:mt-0">
+            {user.role === 'admin' && (
+              <>
+                <button
+                  onClick={() => authManager.downloadAllRecords()}
+                  className="flex items-center text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md"
+                >
+                  <Download size={16} className="mr-1" />
+                  Download Records
+                </button>
+                <button
+                  className="flex items-center text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
+                >
+                  <UserPlus size={16} className="mr-1" />
+                  Add Employee
+                </button>
+              </>
             )}
-          </>
-        )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <button
+            onClick={() => handleAction('clockIn', 'Starting shift')}
+            disabled={!!activeLog}
+            className={`py-2 text-white rounded-md focus:outline-none ${
+              !activeLog ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'
+            }`}
+          >
+            Clock In
+          </button>
+          <button
+            onClick={() => handleAction('clockOut', 'Ending shift')}
+            disabled={!activeLog || !!activeBreak}
+            className={`py-2 text-white rounded-md focus:outline-none ${
+              activeLog && !activeBreak ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'
+            }`}
+          >
+            Clock Out
+          </button>
+          <button
+            onClick={() => handleAction('startBreak', 'Break started')}
+            disabled={!activeLog || !!activeBreak}
+            className={`py-2 text-white rounded-md focus:outline-none ${
+              activeLog && !activeBreak ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-400 cursor-not-allowed'
+            }`}
+          >
+            Start Break
+          </button>
+          <button
+            onClick={() => handleAction('endBreak', 'Break ended')}
+            disabled={!activeBreak}
+            className={`py-2 text-white rounded-md focus:outline-none ${
+              activeBreak ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-400 cursor-not-allowed'
+            }`}
+          >
+            End Break
+          </button>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-lg font-medium mb-2">Today's Time Cards</h3>
+          <TimeLogsTable userId={user.id} showTodayOnly={true} refreshKey={refreshKey} />
+        </div>
       </div>
     </div>
   );

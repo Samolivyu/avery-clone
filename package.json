@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client": "vite",
-    "server": "nodemon server/index.js",
-    "server:prod": "node server/index.js",
+    "server": "nodemon server/server.js",
+    "server:prod": "node server/server.js",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

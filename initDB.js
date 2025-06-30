@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs'; // Added bcrypt for password hashing
 import User from './server/models/user.js';
-import Timesheet from './server/models/timesheet.js';
+import Timesheet from './server/models/timesheet.model.js';
 
 // Load environment variables
 dotenv.config();
@@ -22,15 +23,16 @@ const initializeDatabase = async () => {
         email: 'admin@avery.com',
         firstName: 'Admin',
         lastName: 'User',
+        password: bcrypt.hashSync('admin123', 10), // Added hashed password
+        pin: bcrypt.hashSync('1234', 10), // Hashed PIN
         employeeId: 'ADMIN001',
-        pin: '1234',
         role: 'admin',
         department: 'Management',
         isActive: true
       });
       
       await adminUser.save();
-      console.log('👤 Created admin user: admin@avery.com (PIN: 1234)');
+      console.log('👤 Created admin user: admin@avery.com (Password: admin123, PIN: 1234)');
     } else {
       console.log('👤 Admin user already exists');
     }
@@ -43,15 +45,16 @@ const initializeDatabase = async () => {
         email: 'staff@avery.com',
         firstName: 'John',
         lastName: 'Doe',
+        password: bcrypt.hashSync('staff123', 10), // Added hashed password
+        pin: bcrypt.hashSync('5678', 10), // Hashed PIN
         employeeId: 'STAFF001',
-        pin: '5678',
         role: 'staff',
         department: 'Operations',
         isActive: true
       });
       
       await staffUser.save();
-      console.log('👤 Created staff user: staff@avery.com (PIN: 5678)');
+      console.log('👤 Created staff user: staff@avery.com (Password: staff123, PIN: 5678)');
     } else {
       console.log('👤 Staff user already exists');
     }
@@ -67,13 +70,14 @@ const initializeDatabase = async () => {
     console.log('\n🏗️ Collections & Indexes:');
     const collections = await mongoose.connection.db.listCollections().toArray();
     for (const collection of collections) {
-      console.log(`   ✓ ${collection.name}`);
+      const indexes = await mongoose.connection.db.collection(collection.name).indexes();
+      console.log(`   ✓ ${collection.name} (${indexes.length} indexes)`);
     }
     
     console.log('\n🎉 Database initialization completed successfully!');
     console.log('\n🔑 Test Credentials:');
-    console.log('   Admin: admin@avery.com | PIN: 1234');
-    console.log('   Staff: staff@avery.com | PIN: 5678');
+    console.log('   Admin: admin@avery.com | Password: admin123 | PIN: 1234');
+    console.log('   Staff: staff@avery.com | Password: staff123 | PIN: 5678');
     
   } catch (error) {
     console.error('❌ Database initialization failed:', error.message);
