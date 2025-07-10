@@ -1,129 +1,136 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { authManager } from "../utils/auth";
-import { toast } from "sonner";
+// src/components/auth/LoginForm.jsx
+import React, { useState } from 'react';
+import { authManager } from '../utils/auth.js'; // Corrected import path
+import { toast } from 'sonner';
 
-const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const LoginForm = ({ onLoginSuccess, onSwitchToRegister, onSwitchToPin }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
-      // Perform login via authManager
       const result = await authManager.login(email, password);
-      
       if (result.success) {
         toast.success("Login successful");
-        // Redirect to TimeLogger
-        navigate("/time-logger");
+        onLoginSuccess();
       } else {
-        setError(result.error || "Invalid email or password");
-        toast.error("Login failed");
+        setError(result.error);
+        toast.error("Login failed: " + result.error);
       }
     } catch (err) {
       setError("An error occurred during login");
+      toast.error("An error occurred during login");
       console.error(err);
-      toast.error("Login error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePinRedirect = () => {
-    navigate("/pin");
-  };
-
   return (
-    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-6 text-center text-avery-black">
-        Staff Login
-      </h2>
+   <section className="bg-stone-50 min-h-screen flex items-center justify-center">
+  <div className="w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-md">
+    
+    {/* Header with Logo and Title */}
+    <div className="text-center">
+      <img 
+        className="w-12 h-12 mx-auto mb-3" 
+        src="/images/aea-logo.webp" 
+        alt="Ibibe QA Kanban Logo" 
+      />
+      <h1 className="text-2xl font-bold text-gray-800">
+        Sign In
+      </h1>
+      <p className="text-sm text-gray-500">
+        Welcome back! Please enter your details.
+      </p>
+    </div>
 
+    {/* Login Form */}
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div>
+        <label 
+          htmlFor="email" 
+          className="block mb-2 text-sm font-medium text-gray-700"
+        >
+          Email Address
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          className="w-full px-4 py-2 text-gray-800 bg-stone-100 border border-stone-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label 
+          htmlFor="password" 
+          className="block mb-2 text-sm font-medium text-gray-700"
+        >
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="••••••••"
+          className="w-full px-4 py-2 text-gray-800 bg-stone-100 border border-stone-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      {/* Error Message Display */}
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="px-4 py-3 text-sm text-red-800 bg-red-100 border border-red-300 rounded-lg">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-avery-red"
-            required
-          />
-        </div>
+      {/* Submit Button */}
+      <button
+        type="submit"
+        className="w-full px-5 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 disabled:bg-gray-400"
+        disabled={isLoading}
+      >
+        {isLoading ? 'Signing In...' : 'Sign In'}
+      </button>
 
-        <div className="mb-6">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-1"
+      {/* Bottom Links */}
+      <div className="text-sm text-center text-gray-600">
+        <p>
+          Don’t have an account yet?{' '}
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); onSwitchToRegister(); }}
+            className="font-semibold text-blue-600 hover:underline"
           >
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-avery-red"
-            required
-          />
-        </div>
-
-        <div className="flex justify-between space-x-4">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="w-1/2 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none"
-            disabled={isLoading}
+            Sign up
+          </a>
+        </p>
+        <p className="mt-2">
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); onSwitchToPin(); }}
+            className="font-semibold text-blue-600 hover:underline"
           >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            className="w-1/2 py-2 bg-avery-red border border-gray-300 rounded-md text-gray-700 hover:bg-red-700 focus:outline-none"
-            disabled={isLoading}
-          >
-            {isLoading ? "Logging in..." : "Login"}
-          </button>
-        </div>
-      </form>
-
-      <div className="mt-4 text-center">
-        <button
-          type="button"
-          onClick={handlePinRedirect}
-          className="text-sm text-avery-red hover:underline"
-        >
-          Use PIN Instead
-        </button>
+            Use PIN Instead
+          </a>
+        </p>
       </div>
-
-      <div className="mt-4 text-center text-sm text-gray-600">
-        <p>Demo accounts:</p>
-        <p>admin@avery.com / admin123</p>
-        <p>staff@avery.com / staff123</p>
-        <p className="mt-1">Or use PIN: 1234 (admin) or 5678 (staff)</p>
-      </div>
-    </div>
+    </form>
+  </div>
+</section>
   );
 };
 

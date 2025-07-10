@@ -1,6 +1,6 @@
 // server/models/user.js
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs'; // Required for hashing PIN
+import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
     default: 'employee',
     enum: ['admin', 'manager', 'employee'],
   },
-  pin: { // Add this field for PIN authentication
+  pin: { // Added PIN field
     type: String,
     sparse: true, // Allows null values, so not all users need a PIN
   },
@@ -47,14 +47,15 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// Middleware to hash password before saving
+// Pre-save middleware to hash password and PIN before saving
 UserSchema.pre('save', async function (next) {
+  // Hash password only if it's new or modified
   if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, parseInt(process.env.BCRYPT_SALT_ROUNDS || 12));
   }
-  // Ensure PIN is hashed if it's being set or modified
+  // Hash PIN only if it's new or modified and not null/empty
   if (this.isModified('pin') && this.pin) {
-    this.pin = await bcrypt.hash(this.pin, 10);
+    this.pin = await bcrypt.hash(this.pin, parseInt(process.env.BCRYPT_SALT_ROUNDS || 12));
   }
   this.updatedAt = Date.now();
   next();

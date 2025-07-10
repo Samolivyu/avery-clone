@@ -1,19 +1,18 @@
 // server/routes/auth.js - Handles user authentication routes
 import express from 'express';
-// Assuming authController has named exports for its functions (register, login, verifyToken, verifyPin)
-import * as authController from '../controllers/authcontrol.js';
-// Corrected: Import named exports from middleAuth.js if you use them here
-import { authenticate } from '../middleware/middleAuth.js'; 
+import * as authcontrol from '../controllers/authcontrol.js'; // Use named import for authcontrol functions
+import { authenticate } from '../middleware/middleAuth.js'; // Import named export for middleware
 
 const router = express.Router();
 
 // Public routes (no authentication required)
-router.post('/register', authController.register);
-router.post('/login', authController.login);
-router.post('/pin-login', authController.verifyPin); // Handle PIN login
+router.post('/register', authcontrol.register);      // User registration
+router.post('/login', authcontrol.login);            // Email/password login
+router.post('/pin-login', authcontrol.verifyPin);    // PIN login
 
 // Protected routes (authentication required)
-// Example: Verify token endpoint. The 'authenticate' middleware runs first.
-router.get('/verify-token', authenticate, authController.verifyToken);
+router.get('/verify-token', authenticate, authcontrol.verifyToken); // Verify token endpoint
+router.post('/logout', authenticate, authcontrol.logout);           // Logout route
+router.post('/refresh', authcontrol.refreshToken);                 // Token refresh route
 
 export default router;

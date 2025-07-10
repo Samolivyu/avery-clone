@@ -1,80 +1,102 @@
+// src/components/auth/PinEntryForm.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authManager } from '../utils/auth';
 import { toast } from 'sonner';
+import { authManager } from '../utils/auth'; 
+// Corrected import path
 
-const PinEntryForm = () => {
+const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
   const [pin, setPin] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const [error, setError] = useState('');
+
+  const handlePinChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value) && value.length <= 6) { // Allow 4-6 digits for PIN
+      setPin(value);
+    }
+  };
+
+  const handleClear = () => {
+    setPin('');
+    setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (pin.length < 4) {
+      setError('PIN must be at least 4 digits');
+      toast.error('PIN must be at least 4 digits');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const result = await authManager.loginWithPin(pin);
-      
       if (result.success) {
         toast.success('PIN authentication successful');
-        navigate('/time-logger'); // Redirect to TimeLogger
+        onSuccess();
       } else {
-        setError(result.error || 'Invalid PIN');
-        toast.error('PIN verification failed');
+        setError(result.error);
+        toast.error('Invalid PIN: ' + result.error);
       }
     } catch (err) {
-      setError('PIN authentication failed. Please try again.');
+      setError('An error occurred during PIN login.');
+      toast.error('An error occurred during PIN login.');
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePinChange = (e) => {
-    const value = e.target.value;
-    if (/^\d{0,4}$/.test(value)) {
-      setPin(value);
-    }
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">Enter PIN</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="pin"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              PIN
-            </label>
-            <input
-              type="password"
-              id="pin"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={pin}
-              onChange={handlePinChange}
-              maxLength="4"
-              placeholder="••••"
-              required
-              autoComplete="off"
-            />
-          </div>
-          {error && (
-            <p className="text-red-500 text-xs italic mb-4">{error}</p>
-          )}
+    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-center mb-6">Enter PIN</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <input
+            type="password"
+            value={pin}
+            onChange={handlePinChange}
+            placeholder="Enter your PIN"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            maxLength="6"
+            autoComplete="off"
+            required
+          />
+        </div>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        <div className="flex space-x-2">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-            disabled={pin.length !== 4 || isLoading}
+            disabled={isLoading || pin.length < 4}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-md transition duration-200"
           >
-            {isLoading ? "Verifying..." : "Verify PIN"}
+            {isLoading ? 'Verifying...' : 'Submit'}
           </button>
-        </form>
-      </div>
+
+          <button
+            type="button"
+            onClick={handleClear}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+            disabled={isLoading}
+          >
+            Clear
+          </button>
+        </div>
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }}
+            className="text-sm text-blue-600 hover:underline dark:text-blue-500"
+          >
+            Use Email/Password Instead
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

@@ -1,84 +1,57 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs'; // Added bcrypt for password hashing
+import path from 'path';
+import { fileURLToPath } from 'url';
 import User from './server/models/user.js';
-import Timesheet from './server/models/timesheet.model.js';
 
-// Load environment variables
 dotenv.config();
+const MONGODB_URI = process.env.MONGODB_URI;
 
-const initializeDatabase = async () => {
+export const initializeDatabase = async () => {
   try {
     console.log('🚀 Initializing Staff Timer Database...');
-    
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB Atlas');
-    
-    // Create sample admin user
+
+    await mongoose.connect(MONGODB_URI);
+    console.log('✅ Connected to MongoDB');
+
     const adminExists = await User.findOne({ email: 'admin@avery.com' });
-    
     if (!adminExists) {
       const adminUser = new User({
+        name: 'Admin User',
         email: 'admin@avery.com',
-        firstName: 'Admin',
-        lastName: 'User',
-        password: bcrypt.hashSync('admin123', 10), // Added hashed password
-        pin: bcrypt.hashSync('1234', 10), // Hashed PIN
-        employeeId: 'ADMIN001',
+        password: 'admin123',
+        pin: '1234',
         role: 'admin',
-        department: 'Management',
+        department: 'management',
         isActive: true
       });
-      
       await adminUser.save();
       console.log('👤 Created admin user: admin@avery.com (Password: admin123, PIN: 1234)');
     } else {
       console.log('👤 Admin user already exists');
     }
-    
-    // Create sample staff user
+
     const staffExists = await User.findOne({ email: 'staff@avery.com' });
-    
     if (!staffExists) {
       const staffUser = new User({
+        name: 'John Doe',
         email: 'staff@avery.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        password: bcrypt.hashSync('staff123', 10), // Added hashed password
-        pin: bcrypt.hashSync('5678', 10), // Hashed PIN
-        employeeId: 'STAFF001',
-        role: 'staff',
-        department: 'Operations',
+        password: 'staff123',
+        pin: '5678',
+        role: 'employee',
+        department: 'general',
         isActive: true
       });
-      
       await staffUser.save();
       console.log('👤 Created staff user: staff@avery.com (Password: staff123, PIN: 5678)');
     } else {
       console.log('👤 Staff user already exists');
     }
-    
-    // Display database info
-    const userCount = await User.countDocuments();
-    const timesheetCount = await Timesheet.countDocuments();
-    
-    console.log('\n📊 Database Statistics:');
-    console.log(`   Users: ${userCount}`);
-    console.log(`   Timesheets: ${timesheetCount}`);
-    
-    console.log('\n🏗️ Collections & Indexes:');
-    const collections = await mongoose.connection.db.listCollections().toArray();
-    for (const collection of collections) {
-      const indexes = await mongoose.connection.db.collection(collection.name).indexes();
-      console.log(`   ✓ ${collection.name} (${indexes.length} indexes)`);
-    }
-    
-    console.log('\n🎉 Database initialization completed successfully!');
+
+    console.log('🎉 Database initialization completed successfully!');
     console.log('\n🔑 Test Credentials:');
     console.log('   Admin: admin@avery.com | Password: admin123 | PIN: 1234');
     console.log('   Staff: staff@avery.com | Password: staff123 | PIN: 5678');
-    
   } catch (error) {
     console.error('❌ Database initialization failed:', error.message);
     process.exit(1);
@@ -89,5 +62,8 @@ const initializeDatabase = async () => {
   }
 };
 
-// Run initialization
-initializeDatabase();
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] === __filename) {
+  dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+  initializeDatabase();
+}

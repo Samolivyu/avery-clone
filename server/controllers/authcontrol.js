@@ -3,37 +3,44 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js'; // Ensure the path is correct to your User model
 
-// Assuming process.env.JWT_SECRET is defined in your server's .env
-const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_jwt_secret';
-const JWT_ACCESS_EXPIRY = '1h'; // Example: 1 hour for access tokens
+// Load secrets and expiry from environment variables
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_SECRET; // Fallback to JWT_SECRET if refresh secret not set
+const ACCESS_TOKEN_EXPIRY = process.env.JWT_EXPIRES_IN || '1h'; // Use JWT_EXPIRES_IN from .env
+const REFRESH_TOKEN_EXPIRY = '7d'; // Hardcoded for refresh token, consider adding to .env
+
+const BCRYPT_SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || 12);
+
+// In a real application, you'd store refresh tokens in a database (e.g., Redis or MongoDB)
+// For simplicity, we'll use an in-memory Set for demonstration (NOT PRODUCTION READY)
+const refreshTokens = new Set(); // Stores valid refresh tokens
 
 export const register = async (req, res) => {
-  const { name, email, password, department, role, pin } = req.body; // Include pin here
+  const { name, email, password, department, role, pin } = req.body;
 
   try {
     let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: { message: 'User already exists with this email.' } });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedPin = pin ? await bcrypt.hash(pin, 10) : null; // Hash PIN if provided
-
+    // Password and PIN hashing are handled by pre-save hooks in user.js model
     user = new User({
       name,
       email,
-      password: hashedPassword,
-      department,
-      role,
-      pin: hashedPin // Save hashed PIN
+      password,
+      department: department || 'general',
+      role: role || 'employee',
+      pin, // This will be hashed by the pre-save hook
     });
 
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully', userId: user._id });
+    await user.save(); // This triggers the pre-save hooks for hashing
+
+    res.status(201).json({ message: 'User registered successfully', data: { userId: user._id, email: user.email } });
 
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ error: 'Server error during registration' });
+    res.status(500).json({ error: { message: 'Server error during registration.' } });
   }
 };
 
@@ -43,12 +50,12 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: { message: 'Invalid credentials.' } });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid credentials' });
+      return res.status(400).json({ error: { message: 'Invalid credentials.' } });
     }
 
     const payload = {
@@ -59,12 +66,16 @@ export const login = async (req, res) => {
       name: user.name
     };
 
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRY });
-    // In a real app, you'd also issue a refresh token if managing sessions this way
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+
+    refreshTokens.add(refreshToken); // Store refresh token (in-memory, for demo only)
+
     res.json({
       message: 'Logged in successfully',
       data: {
         accessToken,
+        refreshToken, // Send refresh token to client
         user: {
           userId: user._id,
           name: user.name,
@@ -77,7 +88,64 @@ export const login = async (req, res) => {
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ error: 'Server error during login' });
+    res.status(500).json({ error: { message: 'Server error during login.' } });
+  }
+};
+
+export const verifyPin = async (req, res) => {
+  const { pin } = req.body;
+  // For PIN login, a more secure approach would be to send an identifier (e.g., employeeId or email)
+  // along with the PIN. For now, we'll find a user by matching the PIN.
+  // This is NOT ideal for production security if PINs are not unique or are easily guessable.
+
+  try 
+    // Find all users with a PIN set and iterate to compare hashed PINs
+    {
+      const usersWithPin = await User.find({ pin: { $exists: true, $ne: null, $ne: '' } });
+    let foundUser = null;
+
+    for (const user of usersWithPin) {
+        if (user.pin && await bcrypt.compare(pin, user.pin)) {
+            foundUser = user;
+            break;
+        }
+    }
+
+    if (!foundUser) {
+      return res.status(401).json({ error: { message: 'Invalid PIN.' } });
+    }
+
+    const payload = {
+      userId: foundUser._id,
+      email: foundUser.email,
+      role: foundUser.role,
+      department: foundUser.department,
+      name: foundUser.name
+    };
+
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+
+    refreshTokens.add(refreshToken); // Store refresh token
+
+    res.status(200).json({
+      message: 'PIN verified successfully',
+      data: {
+        accessToken,
+        refreshToken,
+        user: {
+          userId: foundUser._id,
+          name: foundUser.name,
+          email: foundUser.email,
+          role: foundUser.role,
+          department: foundUser.department
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Error verifying PIN:', error);
+    res.status(500).json({ error: { message: 'Server error during PIN verification.' } });
   }
 };
 
@@ -85,6 +153,7 @@ export const verifyToken = (req, res) => {
   // This controller is reached if the 'authenticate' middleware succeeds.
   // The 'authenticate' middleware has already verified the token and attached user info to req.user
   if (req.user) {
+    // Return the user data that was decoded from the token by the middleware
     res.status(200).json({ valid: true, user: req.user, message: 'Token is valid' });
   } else {
     // This case should ideally not be reached if authenticate middleware works correctly
@@ -92,37 +161,52 @@ export const verifyToken = (req, res) => {
   }
 };
 
-export const verifyPin = async (req, res) => {
-  const { pin } = req.body;
-  const userId = req.user._id; // User ID from the JWT token, populated by authenticate middleware
+export const logout = (req, res) => {
+  const { refreshToken } = req.body; // Assuming refresh token is sent in body for logout
 
-  if (!pin) {
-    return res.status(400).json({ message: 'PIN is required' });
+  if (refreshToken && refreshTokens.has(refreshToken)) {
+    refreshTokens.delete(refreshToken); // Remove refresh token from our in-memory store
   }
-
-  try {
-    const user = await User.findById(userId); // Assuming User model has findById
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (!user.pin) {
-      return res.status(400).json({ message: 'User does not have a PIN set' });
-    }
-
-    // Compare the provided PIN with the hashed PIN stored in the database
-    const isPinValid = await bcrypt.compare(pin, user.pin);
-
-    if (!isPinValid) {
-      return res.status(401).json({ message: 'Invalid PIN' });
-    }
-
-    // If PIN is valid, respond with success.
-    res.status(200).json({ message: 'PIN verified successfully', data: { user: req.user } }); // Optionally return user data
-  } catch (error) {
-    console.error('Error verifying PIN:', error);
-    res.status(500).json({ message: 'Server error during PIN verification' });
-  }
+  // Client-side will also clear access token
+  res.status(200).json({ message: 'Logged out successfully' });
 };
 
-// Add other authentication-related controllers here if needed (e.g., logout, refresh token)
+export const refreshToken = (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken || !refreshTokens.has(refreshToken)) {
+    return res.status(403).json({ error: { message: 'Refresh Token Required or Invalid.' } });
+  }
+
+  jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err, userPayload) => {
+    if (err) {
+      refreshTokens.delete(refreshToken); // Remove invalid/expired refresh token
+      return res.status(403).json({ error: { message: 'Invalid Refresh Token.' } });
+    }
+
+    // Re-create payload for new access token, excluding iat and exp from old token
+    const newPayload = {
+      userId: userPayload.userId,
+      email: userPayload.email,
+      role: userPayload.role,
+      department: userPayload.department,
+      name: userPayload.name
+    };
+
+    const newAccessToken = jwt.sign(newPayload, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+    const newRefreshToken = jwt.sign(newPayload, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+
+    // Invalidate old refresh token and add new one (if using persistent store, this is crucial)
+    refreshTokens.delete(refreshToken);
+    refreshTokens.add(newRefreshToken);
+
+    res.json({
+      message: 'Token refreshed successfully',
+      data: {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        user: newPayload // Send updated user payload if needed, or just rely on frontend to keep it
+      }
+    });
+  });
+};
