@@ -10,18 +10,17 @@ export const authenticate = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Attach decoded user info to req.user for controllers to use
     req.user = {
-      _id: decoded.userId, // MongoDB's default ID field
-      userId: decoded.userId, // For consistency with frontend's `currentUser.userId`
+      userId: decoded.userId,
       email: decoded.email,
       role: decoded.role,
       department: decoded.department,
-      name: decoded.name // Ensure name is included in your JWT payload
+      firstName: decoded.firstName,
+      lastName: decoded.lastName,
+      employeeId: decoded.employeeId
     };
     next();
   } catch (err) {
-    // If token is invalid or expired
     res.status(401).json({ error: 'Invalid or expired token' });
   }
 };

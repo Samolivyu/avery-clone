@@ -1,9 +1,7 @@
-// server/routes/time.js - Handles time logging routes
+// server/routes/time.js
 import express from 'express';
-// Assuming tsCtrl has named exports for its functions
-import * as tsCtrl from '../models/timesheet.controller.js'; // Use named import for tsCtrl's functions
-import { authenticate } from '../middleware/middleAuth.js'; // Corrected: Import 'authenticate' as a named export
-
+import * as tsCtrl from '../controllers/timesheet.controller.js';
+import { authenticate } from '../middleware/middleAuth.js';
 
 const router = express.Router();
 
@@ -14,7 +12,7 @@ router.post('/clock-in', tsCtrl.clockIn);
 router.post('/clock-out', tsCtrl.clockOut);
 router.get('/active-log', tsCtrl.getActiveLog);
 router.get('/today-logs', tsCtrl.getTodaysLogs);
-router.get('/logs/:userId', tsCtrl.getUserLogs); // Adding a route for getting all user logs, used by TimeLogsTable
-router.get('/active-break/:userId', tsCtrl.getActiveBreak); // Adding a route for active break
+router.get('/logs/:userId', tsCtrl.getUserLogs); // Fixed parameter name
+router.get('/active-break/:userId', tsCtrl.getActiveBreak); // Fixed parameter name
 
 export default router;

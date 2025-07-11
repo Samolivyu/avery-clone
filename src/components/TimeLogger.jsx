@@ -1,26 +1,27 @@
+// src/components/TimeLogger.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Download, UserPlus } from 'lucide-react';
+import { X, Download, UserPlus } from 'lucide-react'; // fixed UserPlus import
 import { authManager } from '../utils/auth';
-import TimeLogsTable from './TimeLogsTable';
+import TimeLogsTable from './dashboard/TimeLogsTable';
 import { toast } from 'sonner';
 
-const TimeLogger = () => {
-  const [user, setUser] = useState(null);
+const TimeLogger = ({ onLogout }) => {
+  const [user, setUser ] = useState(null);
   const [activeLog, setActiveLog] = useState(null);
   const [activeBreak, setActiveBreak] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
 
-  // Redirect to login if not authenticated, else fetch active log and break
+  // Redirect if not authenticated; else load status
   useEffect(() => {
-    const currentUser = authManager.getCurrentUser();
-    if (!currentUser) {
+    const currentUser  = authManager.getCurrentUser ();
+    if (!currentUser ) {
       navigate('/login');
       return;
     }
-    setUser(currentUser);
+    setUser (currentUser );
 
     const fetchStatus = async () => {
       try {
@@ -44,21 +45,11 @@ const TimeLogger = () => {
     return () => clearInterval(id);
   }, []);
 
-  const handleRefresh = () => setRefreshKey((k) => k + 1);
-
-  const handleLogout = async () => {
-    try {
-      await authManager.logout();
-      toast.success('Logged out successfully');
-      navigate('/login');
-    } catch (err) {
-      toast.error('Logout failed');
-    }
-  };
+  const handleRefresh = () => setRefreshKey(k => k + 1);
 
   const handleAction = async (action, notes = '') => {
     if (!user) {
-      toast.error('User not logged in.');
+      toast.error('User  not logged in.');
       return;
     }
     try {
@@ -89,7 +80,7 @@ const TimeLogger = () => {
     }
   };
 
-  const formatTime = (dt) =>
+  const formatTime = dt =>
     dt.toLocaleString('en-US', {
       month: '2-digit',
       day: '2-digit',
@@ -101,15 +92,17 @@ const TimeLogger = () => {
     });
 
   if (!user) {
-    // Optional: show a loading state briefly, but navigate kicks in above
     return <p className="text-gray-500 text-center my-4">Redirecting to login...</p>;
   }
+
+  // Compute display name from firstName/lastName
+  const userName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
 
   return (
     <div className="bg-white rounded-lg shadow-xl w-full max-w-md border border-gray-200 mx-auto my-8">
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-900">Employee Time Clock</h2>
-        <button className="text-gray-500 hover:text-gray-700" onClick={handleLogout}>
+        <button className="text-gray-500 hover:text-gray-700" onClick={onLogout}>
           Logout
         </button>
       </div>
@@ -121,7 +114,7 @@ const TimeLogger = () => {
 
         <div className="flex justify-between items-center mb-4 flex-wrap">
           <div>
-            <p className="font-medium text-gray-900">{user.name}</p>
+            <p className="font-medium text-gray-900">{userName}</p>
             <p className="text-sm text-gray-600">{user.email}</p>
             <p className="text-xs text-gray-500 capitalize">ID: {user.userId}</p>
           </div>
@@ -138,7 +131,7 @@ const TimeLogger = () => {
                 <button
                   className="flex items-center text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
                 >
-                  <UserPlus size={16} className="mr-1" />
+                  <User Plus size={16} className="mr-1" />
                   Add Employee
                 </button>
               </>
@@ -187,7 +180,7 @@ const TimeLogger = () => {
 
         <div className="mt-6">
           <h3 className="text-lg font-medium mb-2">Today's Time Cards</h3>
-          <TimeLogsTable userId={user.id} showTodayOnly={true} refreshKey={refreshKey} />
+          <TimeLogsTable userId={user.userId} showTodayOnly={true} refreshKey={refreshKey} />
         </div>
       </div>
     </div>

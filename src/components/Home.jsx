@@ -1,7 +1,7 @@
 import  { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Login from "./LoginForm.jsx";
-import PinEntryForm from './PinEntryForm.jsx';
+import Login from "./auth/LoginForm.jsx";
+import PinEntryForm from './auth/PinEntryForm.jsx';
 import Footer from './Footer.jsx';
 
 const Button = ({ children, className = '', ...props }) => (
@@ -21,7 +21,7 @@ const Home = () => {
   const initialState = {
     name: "",
     email: "",
-    message: "https://www.blackbox.ai/chat/FIZzyp1",
+    message: "",
   };
 
   const [form, setForm] = useState(initialState);

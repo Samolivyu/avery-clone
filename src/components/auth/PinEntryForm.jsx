@@ -1,13 +1,14 @@
 // src/components/auth/PinEntryForm.jsx
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { authManager } from '../utils/auth'; 
-// Corrected import path
+import { authManager } from '../../utils/auth'; 
+import { useNavigate } from 'react-router-dom';
 
 const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handlePinChange = (e) => {
     const value = e.target.value;
@@ -90,11 +91,23 @@ const PinEntryForm = ({ onSuccess, onSwitchToLogin }) => {
         <div className="mt-4 text-center">
           <button
             type="button"
-            onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }}
-            className="text-sm text-blue-600 hover:underline dark:text-blue-500"
+            onClick={() => {
+              handleClear(); // Clear the PIN input
+              onSwitchToLogin(); // Switch to login form
+            }}
+            className="text-sm text-blue-600 hover:underline"
           >
             Use Email/Password Instead
           </button>
+          <p className="mt-2 text-sm text-gray-600">
+            Don't have an account?{' '}
+            <button
+              onClick={() => navigate('/')}
+              className="font-medium text-blue-600 hover:underline"
+            >
+              Sign up
+            </button>
+          </p>
         </div>
       </form>
     </div>
