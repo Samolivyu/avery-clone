@@ -1,3 +1,4 @@
+// server/models/user.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
@@ -18,6 +19,20 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
+  // ADDED: Email field
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
+  // ADDED: Password field
+  password: {
+    type: String,
+    required: true,
+  },
   department: {
     type: String,
     default: 'general',
@@ -30,7 +45,7 @@ const UserSchema = new mongoose.Schema({
   },
   pin: {
     type: String,
-    sparse: true,
+    sparse: true, // `sparse: true` allows null values for unique fields
   },
   isActive: {
     type: Boolean,
@@ -46,6 +61,7 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+// Pre-save hook to hash password and pin before saving
 UserSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, parseInt(process.env.BCRYPT_SALT_ROUNDS || 12));
@@ -53,6 +69,7 @@ UserSchema.pre('save', async function (next) {
   if (this.isModified('pin') && this.pin) {
     this.pin = await bcrypt.hash(this.pin, parseInt(process.env.BCRYPT_SALT_ROUNDS || 12));
   }
+  // Update `updatedAt` field on save
   this.updatedAt = Date.now();
   next();
 });

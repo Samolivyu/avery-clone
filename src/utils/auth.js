@@ -108,7 +108,7 @@ class AuthManager {
 
   async loginWithPin(pin) {
     try {
-      const res = await axios.post(`${API_URL}/auth/pin-login`, { pin });
+      const res = await axios.post(`${API_URL}/auth/pin`, { pin });
       this.storeAuthData(res.data.accessToken, res.data.user, res.data.refreshToken);
       return { success: true, user: this.user };
     } catch (err) {

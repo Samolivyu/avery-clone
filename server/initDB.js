@@ -33,7 +33,9 @@ export const initializeDatabase = async () => {
     const staffExists = await User.findOne({ email: 'staff@avery.com' });
     if (!staffExists) {
       const staffUser = new User({
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
+        employeeId: 'S001',
         email: 'staff@avery.com',
         password: 'staff123',
         pin: '5678',

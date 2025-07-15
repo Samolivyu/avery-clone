@@ -1,6 +1,7 @@
+// server/controllers/authcontrol.js
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../../server/models/user.js';
+import User from '../models/user.js'; // Corrected import path
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_SECRET;
@@ -17,7 +18,7 @@ export const register = async (req, res) => {
     if (user) {
       return res.status(400).json({ 
         error: { 
-          message: 'User already exists with this email or employee ID' 
+          message: 'User  already exists with this email or employee ID' 
         } 
       });
     }
@@ -35,7 +36,7 @@ export const register = async (req, res) => {
 
     await user.save();
     res.status(201).json({
-      message: 'User registered successfully',
+      message: 'User  registered successfully',
       data: { userId: user._id, email: user.email }
     });
   } catch (error) {

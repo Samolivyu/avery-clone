@@ -116,7 +116,7 @@ npm install --save-dev nodemon concurrently
 ```
 POST /api/auth/signup     # User registration
 POST /api/auth/login      # Email/password login
-POST /api/auth/pin-login  # PIN-based authentication
+POST /api/auth/pin  # PIN-based authentication
 GET  /api/auth/verify     # Token verification
 POST /api/auth/refresh    # Token refresh
 POST /api/auth/logout     # User logout
@@ -170,7 +170,7 @@ PUT  /api/user/profile    # Protected: Update user profile
 // 4. Generate JWT token
 // 5. Return token + user data
 
-// POST /api/auth/pin-login
+// POST /api/auth/pin
 // 1. Validate PIN input
 // 2. Find user by PIN (hashed)
 // 3. Verify PIN with bcrypt

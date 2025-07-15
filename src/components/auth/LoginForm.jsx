@@ -1,10 +1,11 @@
 // src/components/auth/LoginForm.jsx
 import React, { useState } from 'react';
-import { authManager } from '../../utils/auth'; 
+import { authManager } from '../../utils/auth';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
-const LoginForm = ({ onLoginSuccess, onSwitchToRegister, onSwitchToPin }) => {
+// Remove 'onSwitchToRegister' and 'onSwitchToPin' from props
+const LoginForm = ({ onLoginSuccess /*, onSwitchToRegister, onSwitchToPin */ }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -37,43 +38,37 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister, onSwitchToPin }) => {
   return (
     <section className="bg-stone-50 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-md">
-        
+
         {/* Header with Logo and Title */}
         <div className="text-center">
-          <img 
-            className="w-12 h-12 mx-auto mb-3" 
-            src="/images/aea-logo.webp" 
-            alt="AVERY LOGO" 
+          <img
+            className="mx-auto h-12 w-auto mb-4"
+            src="/path/to/your/logo.png" // Update this path to your actual logo
+            alt="Logo"
           />
-          <h1 className="text-2xl font-bold text-gray-800">Sign In</h1>
-          <p className="text-sm text-gray-500">Welcome back! Please enter your details.</p>
+          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            Sign in to your account
+          </h1>
         </div>
 
-        {/* Login Form */}
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label 
-              htmlFor="email" 
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Email Address
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Your email
             </label>
             <input
               type="email"
               name="email"
               id="email"
-              className="w-full px-4 py-2 text-gray-800 bg-stone-100 border border-stone-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-
           <div>
-            <label 
-              htmlFor="password" 
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Password
             </label>
             <input
@@ -81,7 +76,7 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister, onSwitchToPin }) => {
               name="password"
               id="password"
               placeholder="••••••••"
-              className="w-full px-4 py-2 text-gray-800 bg-stone-100 border border-stone-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -109,7 +104,7 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister, onSwitchToPin }) => {
             <p>
               Don’t have an account yet?{' '}
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/register')} // Updated from '/' to '/register' for clarity
                 className="font-semibold text-blue-600 hover:underline"
               >
                 Sign up
@@ -117,7 +112,7 @@ const LoginForm = ({ onLoginSuccess, onSwitchToRegister, onSwitchToPin }) => {
             </p>
             <p className="mt-2">
               <button
-                onClick={() => navigate('/pin-login')}
+                onClick={() => navigate('/pin')} // Updated from '/pin' to '/pin' for consistency with App.jsx
                 className="font-semibold text-blue-600 hover:underline"
               >
                 Use PIN Instead

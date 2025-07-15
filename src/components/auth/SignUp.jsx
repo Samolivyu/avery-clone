@@ -273,7 +273,7 @@ return (
           <p className="mt-2 text-sm text-gray-600">
             Want to use PIN?{' '}
             <button
-              onClick={() => navigate('/pin-login')}
+              onClick={() => navigate('/pin')}
               className="font-medium text-blue-600 hover:underline"
             >
               Login with PIN
