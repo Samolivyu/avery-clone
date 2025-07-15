@@ -1,16 +1,22 @@
 // src/components/auth/LoginForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { authManager } from '../../utils/auth';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
-// Remove 'onSwitchToRegister' and 'onSwitchToPin' from props
-const LoginForm = ({ onLoginSuccess /*, onSwitchToRegister, onSwitchToPin */ }) => {
+const LoginForm = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const isMounted = useRef(true); // Track if the component is mounted
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false; // Set to false on unmount
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,19 +25,21 @@ const LoginForm = ({ onLoginSuccess /*, onSwitchToRegister, onSwitchToPin */ }) 
 
     try {
       const result = await authManager.login(email, password);
-      if (result.success) {
+      if (result.success && isMounted.current) {
         toast.success("Login successful");
         onLoginSuccess();
-      } else {
+      } else if (isMounted.current) {
         setError(result.error);
         toast.error("Login failed: " + result.error);
       }
     } catch (err) {
-      setError("An error occurred during login");
-      toast.error("An error occurred during login");
-      console.error(err);
+      if (isMounted.current) {
+        setError("An error occurred during login");
+        toast.error("An error occurred during login");
+        console.error(err);
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted.current) setIsLoading(false);
     }
   };
 

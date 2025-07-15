@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname  = path.dirname(__filename)
 import User from './models/user.js';
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../.env') })
 const MONGODB_URI = process.env.MONGODB_URI;
 
 export const initializeDatabase = async () => {
@@ -14,7 +16,7 @@ export const initializeDatabase = async () => {
     await mongoose.connect(MONGODB_URI);
     console.log('✅ Connected to MongoDB');
 
-      const adminExists = await User.findOne({ email: 'admin@avery.com' });
+    const adminExists = await User.findOne({ email: 'admin@avery.com' });
     if (!adminExists) {
       const adminUser = new User({
         firstName: 'Admin',
@@ -33,9 +35,7 @@ export const initializeDatabase = async () => {
     const staffExists = await User.findOne({ email: 'staff@avery.com' });
     if (!staffExists) {
       const staffUser = new User({
-        firstName: 'John',
-        lastName: 'Doe',
-        employeeId: 'S001',
+        name: 'John Doe',
         email: 'staff@avery.com',
         password: 'staff123',
         pin: '5678',
@@ -58,13 +58,6 @@ export const initializeDatabase = async () => {
     process.exit(1);
   } finally {
     await mongoose.connection.close();
-    console.log('\n📴 Database connection closed');
-    process.exit(0);
+    console.log('📴 Database connection closed after init.'); // Added for clarity
   }
 };
-
-const __filename = fileURLToPath(import.meta.url);
-if (process.argv[1] === __filename) {
-  dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-  initializeDatabase();
-}

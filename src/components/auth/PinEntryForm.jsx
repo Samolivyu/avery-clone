@@ -1,15 +1,21 @@
 // src/components/auth/PinEntryForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { authManager } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 
-// Remove 'onSwitchToLogin' from props
-const PinEntryForm = ({ onSuccess /*, onSwitchToLogin */ }) => {
+const PinEntryForm = ({ onSuccess }) => {
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const isMounted = useRef(true); // Track if the component is mounted
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false; // Set to false on unmount
+    };
+  }, []);
 
   const handlePinChange = (e) => {
     const value = e.target.value;
@@ -37,19 +43,21 @@ const PinEntryForm = ({ onSuccess /*, onSwitchToLogin */ }) => {
 
     try {
       const result = await authManager.loginWithPin(pin);
-      if (result.success) {
+      if (result.success && isMounted.current) {
         toast.success('PIN authentication successful');
         onSuccess();
-      } else {
+      } else if (isMounted.current) {
         setError(result.error);
         toast.error('Invalid PIN: ' + result.error);
       }
     } catch (err) {
-      setError('An error occurred during PIN login.');
-      toast.error('An error occurred during PIN login.');
-      console.error(err);
+      if (isMounted.current) {
+        setError('An error occurred during PIN login.');
+        toast.error('An error occurred during PIN login.');
+        console.error(err);
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted.current) setIsLoading(false);
     }
   };
 
@@ -102,7 +110,6 @@ const PinEntryForm = ({ onSuccess /*, onSwitchToLogin */ }) => {
           <div className="mt-4 text-center">
             <button
               type="button"
-              // Directly navigate to login
               onClick={() => {
                 handleClear(); // Clear the PIN input
                 navigate('/login'); // Use navigate directly
