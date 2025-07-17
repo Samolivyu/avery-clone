@@ -89,9 +89,11 @@ export default function App() {
       <Routes>
         {!isAuthenticated ? (
           <>
+            {/* SignUp as the default page */}
             <Route path="/" element={<SignUp onRegisterSuccess={handleRegisterSuccess} />} />
             <Route path="/login" element={<LoginForm onLoginSuccess={handleLoginSuccess} />} />
-            <Route path="/pin-login" element={<PinEntryForm onSuccess={handleLoginSuccess} />} />
+            <Route path="/pin" element={<PinEntryForm onSuccess={handleLoginSuccess} />} /> {/* Corrected from /pin-login to /pin */}
+            <Route path="/register" element={<Navigate to="/" replace />} /> {/* Redirect register to home if already on sign up */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (
@@ -101,7 +103,7 @@ export default function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/services" element={<Services />} />
             <Route path="/login" element={<Navigate to="/" replace />} />
-            <Route path="/pin-login" element={<Navigate to="/" replace />} />
+            <Route path="/pin" element={<Navigate to="/" replace />} /> {/* Corrected to /pin */}
             <Route path="/register" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFound />} />
           </>
