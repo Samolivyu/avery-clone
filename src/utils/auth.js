@@ -16,7 +16,7 @@ class AuthManager {
       const token = localStorage.getItem('access_token');
       const refreshToken = localStorage.getItem('refresh_token');
       const userData = localStorage.getItem('user_data');
-      
+
       if (token && userData) {
         if (this.isTokenExpired(token)) {
           this.refreshToken = refreshToken;
@@ -29,7 +29,7 @@ class AuthManager {
           this.user = JSON.parse(userData);
           return true;
         }
-        
+
         this.token = token;
         this.refreshToken = refreshToken;
         this.user = JSON.parse(userData);
@@ -76,45 +76,73 @@ class AuthManager {
   async register(userData) {
     try {
       const res = await axios.post(`${API_URL}/auth/register`, userData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       });
-      return { 
-        success: true, 
-        message: res.data.message 
+      return {
+        success: true,
+        message: res.data.message
       };
     } catch (err) {
       console.error('Registration error:', err);
-      return { 
-        success: false, 
-        error: err.response?.data?.error?.message || 'Registration failed. Server may be down.' 
+      return {
+        success: false,
+        error:
+          err.response?.data?.error?.message ||
+          'Registration failed. Server may be down.'
       };
     }
   }
 
   async login(email, password) {
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
-      this.storeAuthData(res.data.accessToken, res.data.user, res.data.refreshToken);
+      const res = await axios.post(
+        `${API_URL}/auth/login`,
+        { email, password },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+      this.storeAuthData(
+        res.data.accessToken,
+        res.data.user,
+        res.data.refreshToken
+      );
       return { success: true, user: this.user };
     } catch (err) {
-      return { 
-        success: false, 
-        error: err.response?.data?.error || 'Login failed' 
+      console.error('Login error:', err.response?.data);
+      return {
+        success: false,
+        error:
+          err.response?.data?.error?.message ||
+          err.response?.data?.error ||
+          'Login failed'
       };
     }
   }
 
   async loginWithPin(pin) {
     try {
-      const res = await axios.post(`${API_URL}/auth/pin`, { pin });
-      this.storeAuthData(res.data.accessToken, res.data.user, res.data.refreshToken);
+      const res = await axios.post(
+        `${API_URL}/auth/pin`,
+        { pin },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+      this.storeAuthData(
+        res.data.accessToken,
+        res.data.user,
+        res.data.refreshToken
+      );
       return { success: true, user: this.user };
     } catch (err) {
-      return { 
-        success: false, 
-        error: err.response?.data?.error || 'PIN login failed' 
+      console.error('PIN login error:', err.response?.data);
+      return {
+        success: false,
+        error:
+          err.response?.data?.error?.message ||
+          err.response?.data?.error ||
+          'PIN login failed'
       };
     }
   }
@@ -122,7 +150,9 @@ class AuthManager {
   async logout() {
     try {
       if (this.refreshToken) {
-        await axios.post(`${API_URL}/auth/logout`, { refreshToken: this.refreshToken });
+        await axios.post(`${API_URL}/auth/logout`, {
+          refreshToken: this.refreshToken
+        });
       }
     } catch (err) {
       console.error('Logout failed:', err);
@@ -134,8 +164,11 @@ class AuthManager {
   async refreshAccessToken() {
     if (!this.refreshToken) return null;
     if (this.refreshPromise) return this.refreshPromise;
-    
-    this.refreshPromise = axios.post(`${API_URL}/auth/refresh`, { refreshToken: this.refreshToken })
+
+    this.refreshPromise = axios
+      .post(`${API_URL}/auth/refresh`, {
+        refreshToken: this.refreshToken
+      })
       .then(res => {
         this.storeAuthData(res.data.accessToken, this.user, res.data.refreshToken);
         this.refreshPromise = null;
@@ -147,18 +180,18 @@ class AuthManager {
         this.refreshPromise = null;
         return null;
       });
-    
+
     return this.refreshPromise;
   }
 
   async authenticatedRequest(config) {
     let token = this.token;
-    
+
     if (!token || this.isTokenExpired(token)) {
       token = await this.refreshAccessToken();
       if (!token) throw new Error('Session expired');
     }
-    
+
     try {
       return await axios({
         ...config,

@@ -1,4 +1,3 @@
-// src/components/auth/LoginForm.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { authManager } from '../../utils/auth';
 import { toast } from 'sonner';
@@ -10,11 +9,11 @@ const LoginForm = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const isMounted = useRef(true); // Track if the component is mounted
+  const isMounted = useRef(true);
 
   useEffect(() => {
     return () => {
-      isMounted.current = false; // Set to false on unmount
+      isMounted.current = false;
     };
   }, []);
 
@@ -23,14 +22,22 @@ const LoginForm = ({ onLoginSuccess }) => {
     setIsLoading(true);
     setError('');
 
+    // Simple client-side validation
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const result = await authManager.login(email, password);
       if (result.success && isMounted.current) {
         toast.success("Login successful");
         onLoginSuccess();
       } else if (isMounted.current) {
-        setError(result.error);
-        toast.error("Login failed: " + result.error);
+        const msg = result.error || "Login failed";
+        setError(msg);
+        toast.error("Login failed: " + msg);
       }
     } catch (err) {
       if (isMounted.current) {
@@ -39,19 +46,20 @@ const LoginForm = ({ onLoginSuccess }) => {
         console.error(err);
       }
     } finally {
-      if (isMounted.current) setIsLoading(false);
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
     }
   };
 
   return (
     <section className="bg-stone-50 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-sm p-8 space-y-6 bg-white rounded-xl shadow-md">
-
         {/* Header with Logo and Title */}
         <div className="text-center">
           <img
             className="mx-auto h-12 w-auto mb-4"
-            src="/path/to/your/logo.png" 
+            src="/path/to/your/logo.png"
             alt="Logo"
           />
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -61,7 +69,10 @@ const LoginForm = ({ onLoginSuccess }) => {
 
         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
               Your email
             </label>
             <input
@@ -75,8 +86,12 @@ const LoginForm = ({ onLoginSuccess }) => {
               required
             />
           </div>
+
           <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
               Password
             </label>
             <input
@@ -112,7 +127,8 @@ const LoginForm = ({ onLoginSuccess }) => {
             <p>
               Don’t have an account yet?{' '}
               <button
-                onClick={() => navigate('/register')} 
+                type="button"
+                onClick={() => navigate('/register')}
                 className="font-semibold text-blue-600 hover:underline"
               >
                 Sign up
@@ -120,7 +136,8 @@ const LoginForm = ({ onLoginSuccess }) => {
             </p>
             <p className="mt-2">
               <button
-                onClick={() => navigate('/pin')} 
+                type="button"
+                onClick={() => navigate('/pin')}
                 className="font-semibold text-blue-600 hover:underline"
               >
                 Use PIN Instead
