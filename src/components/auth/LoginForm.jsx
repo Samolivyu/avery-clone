@@ -51,7 +51,7 @@ const LoginForm = ({ onLoginSuccess }) => {
         <div className="text-center">
           <img
             className="mx-auto h-12 w-auto mb-4"
-            src="/path/to/your/logo.png" // Update this path to your actual logo
+            src="/path/to/your/logo.png" 
             alt="Logo"
           />
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -112,7 +112,7 @@ const LoginForm = ({ onLoginSuccess }) => {
             <p>
               Don’t have an account yet?{' '}
               <button
-                onClick={() => navigate('/register')} // Updated from '/' to '/register' for clarity
+                onClick={() => navigate('/register')} 
                 className="font-semibold text-blue-600 hover:underline"
               >
                 Sign up
@@ -120,7 +120,7 @@ const LoginForm = ({ onLoginSuccess }) => {
             </p>
             <p className="mt-2">
               <button
-                onClick={() => navigate('/pin')} // Updated from '/pin' to '/pin' for consistency with App.jsx
+                onClick={() => navigate('/pin')} 
                 className="font-semibold text-blue-600 hover:underline"
               >
                 Use PIN Instead

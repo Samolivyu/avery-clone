@@ -1,10 +1,9 @@
-// src/App.jsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { loginSuccess, logoutSuccess, loginFailure } from './store/slices/authSlice';
-import { openModal, closeModal } from './store/slices/ui';
 import { authManager } from './utils/auth';
+
 import SignUp from './components/auth/SignUp.jsx';
 import LoginForm from './components/auth/LoginForm.jsx';
 import PinEntryForm from './components/auth/PinEntryForm.jsx';
@@ -15,64 +14,63 @@ import Products from './pages/Products.jsx';
 import Services from './pages/Services.jsx';
 import NotFound from './pages/NotFound.jsx';
 import TimeLogger from './components/TimeLogger.jsx';
+
 import { Toaster, toast } from 'sonner';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 
 export default function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-  const loading = useSelector(state => state.auth.loading);
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const loading = useSelector((state) => state.auth.loading);
   const authError = useSelector((state) => state.auth.error);
-  const timeLoggerModalOpen = useSelector(
-    state => state.ui.modals.timeLoggerModal?.isOpen || false
-  );
 
-  const [authInitialized, setAuthInitialized] = useState(false); // Track auth initialization
+  const [authInitialized, setAuthInitialized] = useState(false);
 
+  // Initialize auth on mount
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const isAuthenticatedUser  = await authManager.initialize();
-        if (isAuthenticatedUser ) {
+        const userIsAuth = await authManager.initialize();
+        if (userIsAuth) {
           dispatch(loginSuccess(authManager.user));
         }
       } catch (error) {
         console.error('Auth initialization failed:', error);
         dispatch(loginFailure('Authentication initialization failed'));
       } finally {
-        setAuthInitialized(true); // Mark auth as initialized
+        setAuthInitialized(true);
       }
     };
 
     initializeAuth();
   }, [dispatch]);
 
+  // Handlers for login/register/logout
   const handleLoginSuccess = () => {
     dispatch(loginSuccess(authManager.user));
-    navigate('/time-logger');
+    navigate('/time');
   };
 
   const handleRegisterSuccess = () => {
-    toast.success("Registration successful! Please log in.");
+    toast.success('Registration successful! Please log in.');
     navigate('/login');
   };
 
   const handleLogout = async () => {
     await authManager.logout();
     dispatch(logoutSuccess());
-    toast.info("You have been logged out.");
+    toast.info('You have been logged out.');
     navigate('/login');
   };
 
+  // Navigate to the TimeLogger page
   const openTimeLogger = () => {
-    dispatch(openModal('timeLoggerModal'));
+    navigate('/time');
   };
 
-  const closeTimeLogger = () => {
-    dispatch(closeModal('timeLoggerModal'));
-  };
-
+  // Show a loader until auth is initialized
   if (!authInitialized || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -89,21 +87,38 @@ export default function App() {
       <Routes>
         {!isAuthenticated ? (
           <>
-            {/* SignUp as the default page */}
-            <Route path="/" element={<SignUp onRegisterSuccess={handleRegisterSuccess} />} />
-            <Route path="/login" element={<LoginForm onLoginSuccess={handleLoginSuccess} />} />
-            <Route path="/pin" element={<PinEntryForm onSuccess={handleLoginSuccess} />} /> {/* Corrected from /pin-login to /pin */}
-            <Route path="/register" element={<Navigate to="/" replace />} /> {/* Redirect register to home if already on sign up */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route
+              path="/"
+              element={<SignUp onRegisterSuccess={handleRegisterSuccess} />}
+            />
+            <Route
+              path="/login"
+              element={<LoginForm onLoginSuccess={handleLoginSuccess} />}
+            />
+            <Route
+              path="/pin"
+              element={<PinEntryForm onSuccess={handleLoginSuccess} />}
+            />
+            <Route
+              path="/register"
+              element={<Navigate to="/" replace />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to="/" replace />}
+            />
           </>
         ) : (
           <>
             <Route path="/" element={<Home />} />
-            <Route path="/time-logger" element={<TimeLogger onClose={closeTimeLogger} onLogout={handleLogout} />} />
+            <Route
+              path="/time"
+              element={<TimeLogger onLogout={handleLogout} />}
+            />
             <Route path="/products" element={<Products />} />
             <Route path="/services" element={<Services />} />
             <Route path="/login" element={<Navigate to="/" replace />} />
-            <Route path="/pin" element={<Navigate to="/" replace />} /> {/* Corrected to /pin */}
+            <Route path="/pin" element={<Navigate to="/" replace />} />
             <Route path="/register" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFound />} />
           </>
@@ -121,12 +136,6 @@ export default function App() {
         </div>
       )}
 
-      {timeLoggerModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <TimeLogger onClose={closeTimeLogger} />
-        </div>
-      )}
-
       {isAuthenticated && (
         <button
           onClick={handleLogout}
@@ -135,6 +144,7 @@ export default function App() {
           Logout
         </button>
       )}
+
       <Footer />
     </TooltipProvider>
   );

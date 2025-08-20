@@ -95,7 +95,6 @@ const TimeLogger = ({ onLogout }) => {
     return <p className="text-gray-500 text-center my-4">Redirecting to login...</p>;
   }
 
-  // Compute display name from firstName/lastName
   const userName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
 
   return (
