@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Footer from "../components/Footer";
 
-// Example categories based on the products array
+// ---------- Random image helper ----------
+const prodImages = [
+  "/images/Prod1.jpeg",
+  "/images/Prod2.jpeg",
+  "/images/Prod3.jpeg",
+  "/images/Prod4.jpeg",
+  "/images/Prod5.jpeg",
+  "/images/Prod6.jpeg",
+  "/images/Prod7.jpeg",
+  "/images/Prod8.jpeg",
+];
+
+const randomProdImage = () =>
+  prodImages[Math.floor(Math.random() * prodImages.length)];
+
+// ---------- Product data ----------
 const categories = [
   "All",
   "Display Units",
   "Printers",
   "Weighbridges",
   "Bench Scales",
-  "Platform Scales"
+  "Platform Scales",
 ];
 
 const products = [
@@ -253,87 +268,104 @@ const products = [
     id: 30,
     name: "Steelbridge XT Concrete Deck Truck Scale",
     description: "Designed for high traffic and heavy loads, ensuring durability and accuracy.",
-    imagePath: "/images/steelbridge_xt_concrete.jpeg",
+    imagePath: "/images/Prod5.jpeg",
     category: "Weighbridges",
     price: "Ksh. 5,200,000",
   }
 ];
-// Themed Product Card
-const ProductCard = ({ product }) => (
-  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col">
-    <a href="#">
-      <img className="p-8 rounded-t-lg" src={product.imagePath} alt={product.name} />
-    </a>
-    <div className="px-5 pb-5 flex flex-col flex-1">
-      <a href="#">
-        <h5 className="text-xl font-semibold tracking-tight text-gray-900">{product.name}</h5>
-      </a>
-      <p className="text-gray-500 text-sm mt-2 mb-4">{product.description}</p>
-      <div className="flex items-center mt-2.5 mb-5">
-        <div className="flex items-center space-x-1">
-          <svg className="w-4 h-4 text-gray-200" aria-hidden="true" fill="currentColor" viewBox="0 0 22 20">
-            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5 .051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-          </svg>
-        </div>
-        <div className="flex items-center justify-between mt-auto">
-          <p className="text-3xl font-bold text-gray-900">{product.price}</p>
-        </div>
-        <br />
-      </div>
-        <a href="#" className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Add to cart</a>
-    </div>
-  </div>
-);
 
-const Products = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const filteredProducts = products.filter(product => {
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" ? true : product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+// ---------- Product card ----------
+const ProductCard = ({ product }) => {
+  const [imgError, setImgError] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <main className="flex-grow">
-        <div className="container mx-auto px-4 py-12">
-          <h1 className="text-4xl font-extrabold mb-8 text-gray-900">Products</h1>
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-            <select
-              value={selectedCategory}
-              onChange={e => setSelectedCategory(e.target.value)}
-              className="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))
-            ) : (
-              <div className="col-span-full text-center text-gray-500 py-12">
-                No products found.
-              </div>
-            )}
-          </div>
+    <div className="flex flex-col group bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden hover:shadow-lg transition">
+      <div className="relative pt-[50%] sm:pt-[60%] rounded-t-xl overflow-hidden">
+        <img
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-t-xl"
+          src={imgError ? "/images/placeholder.jpg" : product.imagePath}
+          alt={product.name}
+          onError={() => setImgError(true)}
+          loading="lazy"
+        />
+      </div>
+      <div className="p-4 md:p-6">
+        <h3 className="font-semibold text-lg text-gray-900">{product.name}</h3>
+        <p className="mt-2 text-sm text-gray-500 line-clamp-2">{product.description}</p>
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-xl font-bold text-gray-900">{product.price}</span>
+          <button className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-avery-red text-white bg-red-700">
+            Add to Cart
+          </button>
         </div>
-      </main>
+      </div>
+    </div>
+  );
+};
+
+// ---------- Main component ----------
+const Products = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Use useMemo to generate random images only once
+  const productsWithImages = useMemo(() => {
+    return products.map((p) => ({
+      ...p,
+      imagePath: randomProdImage(),
+    }));
+  }, []); 
+
+  const filteredProducts = useMemo(() => {
+    return productsWithImages.filter((product) => {
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "All" ? true : product.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [productsWithImages, searchTerm, selectedCategory]);
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-screen-xl mx-auto px-4 py-12">
+        <h1 className="text-4xl font-bold mb-8 text-gray-900">Products</h1>
+
+        {/* Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

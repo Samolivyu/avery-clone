@@ -1,19 +1,17 @@
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from './store/store';
-import App from './App.jsx';
+import store from './store/store';      // adjust the path to your store file
+import App from './App';
 import './index.css';
-import { BrowserRouter } from 'react-router-dom'; // Keep this here
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  createRoot(rootElement).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter> {/* This is your single, top-level router */}
+      <BrowserRouter>
         <App />
       </BrowserRouter>
     </Provider>
-  );
-} else {
-  console.error('Failed to find the root element');
-}
+  </React.StrictMode>
+);

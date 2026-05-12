@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { authManager } from '../utils/auth';
+import { mockAuth } from '../utils/auth';
 import { loginSuccess, logout } from '../store/slices/authSlice';
 
 export default function useAuth() {
@@ -9,9 +9,9 @@ export default function useAuth() {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const authenticated = await authManager.initialize();
+        const authenticated = await mockAuth.initialize();
         if (authenticated) {
-          dispatch(loginSuccess({ user: authManager.getCurrentUser() }));
+          dispatch(loginSuccess({ user: mockAuth.getCurrentUser() }));
         } else {
           dispatch(logout());
         }

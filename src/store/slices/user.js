@@ -1,4 +1,4 @@
-// src/store/slices/userSlice.js
+// src/store/slices/user.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -34,17 +34,18 @@ const userSlice = createSlice({
       state.loading = false;
     },
     // Action to update a user's data (e.g., admin editing, or user updating their own profile)
-    updateUser: (state, action) => {
-      const updatedUser = action.payload;
-      const index = state.users.findIndex(user => user._id === updatedUser._id);
-      if (index !== -1) {
-        state.users[index] = updatedUser;
-      }
-      if (state.currentUserProfile && state.currentUserProfile._id === updatedUser._id) {
-        state.currentUserProfile = updatedUser;
-      }
-      state.loading = false;
-    },
+updateUser: (state, action) => {
+  const updatedUser = action.payload;
+  const index = state.users.findIndex(u => u.userId === updatedUser.userId);
+  if (index !== -1) {                            
+    state.users[index] = updatedUser;
+  }
+  if (state.currentUserProfile && state.currentUserProfile.userId === updatedUser.userId) {
+    state.currentUserProfile = updatedUser;
+  }
+  state.loading = false;
+},
+
     // Action to add a new user (e.g., admin creating an account)
     addUser: (state, action) => {
       state.users.push(action.payload);

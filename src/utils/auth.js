@@ -1,210 +1,131 @@
-import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
 
-const API_URL = import.meta.env.VITE_API_URL || '/api'; // Changed to relative path
+export const mockAuth = 
+{
+  /**
+   * Simulates user login
+   * @param {string} email 
+   * @param {string} password 
+   * @returns {Promise<{ success: boolean, user?: object, error?: string }>}
+   */
+  login: async (email, password) => {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
-class AuthManager {
-  constructor() {
-    this.user = null;
-    this.token = null;
-    this.refreshToken = null;
-    this.refreshPromise = null;
-  }
-
-  async initialize() {
-    try {
-      const token = localStorage.getItem('access_token');
-      const refreshToken = localStorage.getItem('refresh_token');
-      const userData = localStorage.getItem('user_data');
-
-      if (token && userData) {
-        if (this.isTokenExpired(token)) {
-          this.refreshToken = refreshToken;
-          const newToken = await this.refreshAccessToken();
-          if (!newToken) {
-            this.clearAuth();
-            return false;
-          }
-          this.token = newToken;
-          this.user = JSON.parse(userData);
-          return true;
-        }
-
-        this.token = token;
-        this.refreshToken = refreshToken;
-        this.user = JSON.parse(userData);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Auth initialization error:', error);
-      this.clearAuth();
-      return false;
+    // Validation
+    if (!email.includes('@')) {
+      return { success: false, error: 'Invalid email format.' };
     }
-  }
+    if (password.length < 6) {
+      return { success: false, error: 'Password must be at least 6 characters.' };
+    };
 
-  storeAuthData(accessToken, user, refreshToken = null) {
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('user_data', JSON.stringify(user));
-    if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken);
-      this.refreshToken = refreshToken;
+    // Simulate successful login
+    const token = 'mock-jwt-token-' + Date.now();
+    localStorage.setItem('authToken', token);
+    
+    // Create a mock user object
+    const user = {
+      email,
+      firstName: email.split('@')[0].capitalize(), // Helper to capitalize first letter
+      lastName: 'User',
+      role: 'employee',
+      userId: '12345'
+    };
+
+    return { success: true, user };
+  },
+
+  /**
+   * Simulates user registration
+   * @param {object} data - Contains firstName, lastName, email, password, confirmPassword, etc.
+   * @returns {Promise<{ success: boolean, error?: string }>}
+   */
+  register: async (data) => {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Validation
+    if (!data.email || !data.email.includes('@')) {
+      return { success: false, error: 'Please enter a valid email address.' };
     }
-    this.token = accessToken;
-    this.user = user;
-  }
-
-  clearAuth() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_data');
-    this.token = null;
-    this.user = null;
-    this.refreshToken = null;
-    this.refreshPromise = null;
-  }
-
-  isTokenExpired(token) {
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.exp < Date.now() / 1000;
-    } catch (err) {
-      return true;
+    if (data.password !== data.confirmPassword) {
+      return { success: false, error: 'Passwords do not match.' };
     }
-  }
-
-  async register(userData) {
-    try {
-      const res = await axios.post(`${API_URL}/auth/register`, userData, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-      return {
-        success: true,
-        message: res.data.message
-      };
-    } catch (err) {
-      console.error('Registration error:', err);
-      return {
-        success: false,
-        error:
-          err.response?.data?.error?.message ||
-          'Registration failed. Server may be down.'
-      };
-    }
-  }
-
-  async login(email, password) {
-    try {
-      const res = await axios.post(
-        `${API_URL}/auth/login`,
-        { email, password },
-        {
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-      this.storeAuthData(
-        res.data.accessToken,
-        res.data.user,
-        res.data.refreshToken
-      );
-      return { success: true, user: this.user };
-    } catch (err) {
-      console.error('Login error:', err.response?.data);
-      return {
-        success: false,
-        error:
-          err.response?.data?.error?.message ||
-          err.response?.data?.error ||
-          'Login failed'
-      };
-    }
-  }
-
-  async loginWithPin(pin) {
-    try {
-      const res = await axios.post(
-        `${API_URL}/auth/pin`,
-        { pin },
-        {
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-      this.storeAuthData(
-        res.data.accessToken,
-        res.data.user,
-        res.data.refreshToken
-      );
-      return { success: true, user: this.user };
-    } catch (err) {
-      console.error('PIN login error:', err.response?.data);
-      return {
-        success: false,
-        error:
-          err.response?.data?.error?.message ||
-          err.response?.data?.error ||
-          'PIN login failed'
-      };
-    }
-  }
-
-  async logout() {
-    try {
-      if (this.refreshToken) {
-        await axios.post(`${API_URL}/auth/logout`, {
-          refreshToken: this.refreshToken
-        });
-      }
-    } catch (err) {
-      console.error('Logout failed:', err);
-    } finally {
-      this.clearAuth();
-    }
-  }
-
-  async refreshAccessToken() {
-    if (!this.refreshToken) return null;
-    if (this.refreshPromise) return this.refreshPromise;
-
-    this.refreshPromise = axios
-      .post(`${API_URL}/auth/refresh`, {
-        refreshToken: this.refreshToken
-      })
-      .then(res => {
-        this.storeAuthData(res.data.accessToken, this.user, res.data.refreshToken);
-        this.refreshPromise = null;
-        return res.data.accessToken;
-      })
-      .catch(err => {
-        console.error('Token refresh failed:', err);
-        this.clearAuth();
-        this.refreshPromise = null;
-        return null;
-      });
-
-    return this.refreshPromise;
-  }
-
-  async authenticatedRequest(config) {
-    let token = this.token;
-
-    if (!token || this.isTokenExpired(token)) {
-      token = await this.refreshAccessToken();
-      if (!token) throw new Error('Session expired');
+    if (data.password.length < 6) {
+      return { success: false, error: 'Password must be at least 6 characters.' };
     }
 
-    try {
-      return await axios({
-        ...config,
-        headers: {
-          ...config.headers,
-          Authorization: `Bearer ${token}`
-        }
-      });
-    } catch (err) {
-      if (err.response?.status === 401) this.clearAuth();
-      throw err;
-    }
-  }
-}
+    // Simulate successful registration
+    // In a real app, you would send this to the backend.
+    // Here we just store it in localStorage to simulate persistence if needed.
+    localStorage.setItem('registeredUser', JSON.stringify(data));
+    
+    return { success: true };
+  },
 
-export const authManager = new AuthManager();
+  /**
+   * Simulates PIN login
+   * @param {string} pin 
+   * @returns {Promise<{ success: boolean, user?: object, error?: string }>}
+   */
+  loginWithPin: async (pin) => {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    // Validation
+    if (!pin || pin.length < 4) {
+      return { success: false, error: 'PIN must be at least 4 digits.' };
+    }
+
+    // Simulate successful login
+    const token = 'mock-pin-token-' + Date.now();
+    localStorage.setItem('authToken', token);
+
+    const user = {
+      firstName: 'Pin',
+      lastName: 'User',
+      email: 'pin@user.com',
+      role: 'employee',
+      userId: '67890'
+    };
+
+    return { success: true, user };
+  },
+
+  /**
+   * Clears authentication data
+   */
+  logout: async () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('registeredUser');
+    return { success: true };
+  },
+
+  /**
+   * Checks if user is currently authenticated
+   * @returns {boolean}
+   */
+  isAuthenticated: () => {
+    return !!localStorage.getItem('authToken');
+  },
+
+  /**
+   * Gets current user data from storage or mock
+   * @returns {object|null}
+   */
+  getCurrentUser: () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+
+    // If logged in, return the user data
+    const userData = localStorage.getItem('registeredUser');
+    if (userData) {
+      return JSON.parse(userData);
+    }
+
+    return null;
+  }
+};

@@ -50,12 +50,12 @@
 }
 
 @layer components {
-  .btn-primary {
-    @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors;
-  }
-  
+.btn-primary {
+  @apply bg-primary text-white px-4 py-2 rounded-md transition-colors;
+}
+
   .btn-secondary {
-    @apply bg-secondary text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors;
+    @apply bg-secondary text-white px-4 py-2 rounded-md transition-colors;
   }
   
   .section-title {

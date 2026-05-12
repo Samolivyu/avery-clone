@@ -1,22 +1,11 @@
-// src/store/slices/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import notificationReducer from './slices/notification';
-import authReducer from './slices/authSlice';
-import timesheetReducer from './slices/timesheet';
 import userReducer from './slices/user';
-import uiReducer from './slices/ui';
+import authReducer from './slices/authSlice';
 
-export const store = configureStore({
+export default configureStore({
   reducer: {
-    notifications: notificationReducer,
-    auth: authReducer,
-    timesheet: timesheetReducer,
     user: userReducer,
-    ui: uiReducer,
+    auth: authReducer,
   },
-  middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware({
-      serializableCheck: false
-    }),
-  devTools: process.env.NODE_ENV !== 'production',
 });
+

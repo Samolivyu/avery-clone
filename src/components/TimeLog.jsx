@@ -1,45 +1,41 @@
-// src/components/TimeLogger.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Download, UserPlus } from 'lucide-react'; // fixed UserPlus import
-import { authManager } from '../utils/auth';
-import TimeLogsTable from './dashboard/TimeLogsTable';
+import { Download, UserPlus } from 'lucide-react';
+import { mockAuth } from '../utils/auth'; // Ensure path is correct
+import TimeLogsTable from './dashboard/TimeLogs'; // Ensure path is correct
 import { toast } from 'sonner';
 
 const TimeLogger = ({ onLogout }) => {
-  const [user, setUser ] = useState(null);
+  const [user, setUser] = useState(null);
   const [activeLog, setActiveLog] = useState(null);
   const [activeBreak, setActiveBreak] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [refreshKey, setRefreshKey] = useState(0);
+
   const navigate = useNavigate();
 
-  // Redirect if not authenticated; else load status
   useEffect(() => {
-    const currentUser  = authManager.getCurrentUser ();
-    if (!currentUser ) {
+    const currentUser = mockAuth.getCurrentUser();
+    if (!currentUser) {
       navigate('/login');
       return;
     }
-    setUser (currentUser );
+    setUser(currentUser);
 
     const fetchStatus = async () => {
       try {
-        const logRes = await authManager.getActiveLog();
-        setActiveLog(logRes.activeLog || null);
-        const breakRes = await authManager.getActiveBreak();
-        setActiveBreak(breakRes.activeBreak || null);
+        const logRes = await mockAuth.getActiveLog();
+        const breakRes = await mockAuth.getActiveBreak();
+        setActiveLog(logRes?.activeLog ?? null);
+        setActiveBreak(breakRes?.activeBreak ?? null);
       } catch (err) {
         console.error('Failed to fetch active time status:', err);
         toast.error('Failed to load active time status.');
-        setActiveLog(null);
-        setActiveBreak(null);
       }
     };
     fetchStatus();
   }, [refreshKey, navigate]);
 
-  // Live clock
   useEffect(() => {
     const id = setInterval(() => setCurrentDateTime(new Date()), 1000);
     return () => clearInterval(id);
@@ -49,25 +45,25 @@ const TimeLogger = ({ onLogout }) => {
 
   const handleAction = async (action, notes = '') => {
     if (!user) {
-      toast.error('User  not logged in.');
+      toast.error('User not logged in.');
       return;
     }
     try {
       switch (action) {
         case 'clockIn':
-          await authManager.clockIn(notes);
+          await mockAuth.clockIn(notes);
           toast.success('Clocked in successfully');
           break;
         case 'clockOut':
-          await authManager.clockOut(notes);
+          await mockAuth.clockOut(notes);
           toast.success('Clocked out successfully');
           break;
         case 'startBreak':
-          await authManager.startBreak(notes);
+          await mockAuth.startBreak(notes);
           toast.success('Break started');
           break;
         case 'endBreak':
-          await authManager.endBreak(notes);
+          await mockAuth.endBreak(notes);
           toast.success('Break ended');
           break;
         default:
@@ -117,11 +113,12 @@ const TimeLogger = ({ onLogout }) => {
             <p className="text-sm text-gray-600">{user.email}</p>
             <p className="text-xs text-gray-500 capitalize">ID: {user.userId}</p>
           </div>
+
           <div className="space-y-2 mt-2 md:mt-0">
             {user.role === 'admin' && (
               <>
                 <button
-                  onClick={() => authManager.downloadAllRecords()}
+                  onClick={() => mockAuth.downloadAllRecords()}
                   className="flex items-center text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md"
                 >
                   <Download size={16} className="mr-1" />
@@ -130,7 +127,7 @@ const TimeLogger = ({ onLogout }) => {
                 <button
                   className="flex items-center text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
                 >
-                  <User Plus size={16} className="mr-1" />
+                  <UserPlus size={16} className="mr-1" />
                   Add Employee
                 </button>
               </>
@@ -179,7 +176,11 @@ const TimeLogger = ({ onLogout }) => {
 
         <div className="mt-6">
           <h3 className="text-lg font-medium mb-2">Today's Time Cards</h3>
-          <TimeLogsTable userId={user.userId} showTodayOnly={true} refreshKey={refreshKey} />
+          <TimeLogsTable
+            userId={user.userId}
+            showTodayOnly={true}
+            refreshKey={refreshKey}
+          />
         </div>
       </div>
     </div>

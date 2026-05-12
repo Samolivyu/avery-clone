@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { authManager } from '../../utils/auth';
+import  { mockAuth } from '../../utils/auth';
 import { toast } from 'sonner';
 
 const TimeLogsTable = ({ userId, showTodayOnly = false, refreshKey }) => {
@@ -18,7 +18,7 @@ const TimeLogsTable = ({ userId, showTodayOnly = false, refreshKey }) => {
 
       try {
         // Fixed method name
-        const response = await authManager.getUserLogs(userId);
+        const response = await mockAuth.getUserLogs(userId);
         let fetchedLogs = response.logs || [];
 
         if (showTodayOnly) {
