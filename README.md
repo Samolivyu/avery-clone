@@ -1,6 +1,6 @@
 # AEA Staff Portal — Authentication & Time Logger
 
-A staff authentication and time-logging portal inspired by the [AEA Limited website](https://www.aealimited.com/). The project began as a full-stack React + MongoDB + Express application and has since been refactored into a frontend-only architecture with mock authentication, removing all backend dependencies.
+This wwas a staff authentication and time-logging portal inspired by the [AEA Limited website](https://www.aealimited.com/) and was a full-stack React + MongoDB + Express application. It has been refactored to a frontend-only architecture with mock authentication, removing all backend dependencies since my db trial expired. 
 
 ---
 
@@ -28,11 +28,10 @@ A staff authentication and time-logging portal inspired by the [AEA Limited webs
 
 ---
 
-## What Changed from the Original
+## What Changed.
 
 ### Backend Removed 
-The following have been deleted and are no longer part of the project:
-
+MOngoDB trial expired so I got rid of these:
 - `server/` directory (Express app, routes, middleware)
 - MongoDB/Mongoose dependency and all schemas
 - `bcryptjs`, `jsonwebtoken`, `cors`, `helmet`, `morgan` packages
@@ -40,33 +39,14 @@ The following have been deleted and are no longer part of the project:
 - `npm run server`, `npm run db:connect`, `npm run db:init` scripts
 
 ### Authentication Refactored
-Real API calls replaced by `mockAuth` (`src/utils/mockAuth.js`):
-
-```js
-// All auth methods return { success, error?, user? }
-await mockAuth.login(email, password)
-await mockAuth.register(userData)
-await mockAuth.loginWithPin(pin)
-mockAuth.logout()
-mockAuth.isAuthenticated()
-mockAuth.getCurrentUser()
-mockAuth.getActiveLog()
-mockAuth.getUserLogs()
-mockAuth.downloadAllRecords()
-```
-
+Real API calls replaced by `mockAuth`.
 Data is stored in `localStorage`. No API calls, no tokens from a server.
 
-### Redux Auth Integration (CHANGE-014)
-`Login`, `Pin`, and `SignUp` page components dispatch `loginSuccess` to the Redux auth slice on successful `mockAuth` calls. The slice is purely synchronous — no thunks required.
+### Redux Auth Integration 
+`Login`, `Pin`, and `SignUp` page components dispatch `loginSuccess` to the Redux auth slice on successful `mockAuth` calls. The slice is purely synchronous.
 
-### Static HTML Deliverable (CHANGE-001, CHANGE-007)
-A parallel `index.html` / `index.css` / `script.js` build exists alongside the React app. It uses:
-
-- Hash-based routing via a `routeMap` object
-- Imperative DOM manipulation for all interactivity
-- No build step — open `index.html` in a browser
-
+### Static HTML Deliverable 
+Good old static `index.html` / `index.css` / `script.js` alongside the React app for hash-based routing, DOM manipulation & live server opening. 
 ---
 
 ## Project Structure
@@ -165,6 +145,7 @@ All data lives in `localStorage` under predictable keys.
 ```
 
 ## Deployment
+Try it out here: https://avery-demo.netlify.app
 
 ### Static Host (recommended)
 
@@ -189,4 +170,4 @@ MIT License — see `LICENSE` for details.
 
 ## Acknowledgements
 
-- [AEA Limited](https://www.aealimited.com/) — design and feature inspiration
+- Shoutout to  [AEA Limited](https://www.aealimited.com/) for the OG inspo!
