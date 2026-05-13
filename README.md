@@ -1,4 +1,4 @@
-# AEA Staff Portal — Authentication & Time Logger
+# AEA Staff Portal Authentication & Time Logger
 
 This wwas a staff authentication and time-logging portal inspired by the [AEA Limited website](https://www.aealimited.com/) and was a full-stack React + MongoDB + Express application. It has been refactored to a frontend-only architecture with mock authentication, removing all backend dependencies since my db trial expired. 
 
@@ -53,9 +53,9 @@ Good old static `index.html` / `index.css` / `script.js` alongside the React app
 
 ```
 folder/
-├── index.html              # Static HTML deliverable (no build needed)
-├── index.css               # Cleaned stylesheet (42% smaller — CHANGE-006)
-├── script.js               # Vanilla JS router + interactions
+├── index.html              
+├── index.css               
+├── script.js               
 ├── src/
 │   ├── components/
 │   │   ├── LoginForm.jsx
